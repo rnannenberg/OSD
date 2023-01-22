@@ -23,10 +23,10 @@ Set-DisRes 1600
 #   PreOS
 #   Install and Import OSD Module
 #================================================
-Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
-Install-Module OSD | Out-Null
-Write-Host -ForegroundColor Green "Importing OSD PowerShell Module"
-Import-Module OSD | Out-Null
+#Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
+#Install-Module OSD | Out-Null
+#Write-Host -ForegroundColor Green "Importing OSD PowerShell Module"
+#Import-Module OSD | Out-Null
 
 #================================================
 #   [OS] Start-OSDCloud with Params
