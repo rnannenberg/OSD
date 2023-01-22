@@ -14,19 +14,10 @@ Start-Sleep -Seconds 5
 $ErrorActionPreference = 'SilentlyContinue'
 
 #Change Display Resolution for Virtual Machine
-if ((Get-MyComputerModel) -match 'Virtual') {
+if ((Get-MyComputerModel) -Contains 'VMWare') {
 Write-Host -ForegroundColor Green "Setting Display Resolution to 1600x"
 Set-DisRes 1600
 }
-
-#================================================
-#   PreOS
-#   Install and Import OSD Module
-#================================================
-#Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
-#Install-Module OSD | Out-Null
-#Write-Host -ForegroundColor Green "Importing OSD PowerShell Module"
-#Import-Module OSD | Out-Null
 
 #================================================
 #   [OS] Start-OSDCloud with Params
