@@ -100,41 +100,58 @@ Clear-Host
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
 $appname = @( 
-"*Microsoft.WindowsAlarms*"
-"*microsoft.windowscommunicationsapps*"
-"*Microsoft.WindowsFeedbackHub*"
-"*Microsoft.ZuneMusic*"
-"*Microsoft.ZuneVideo*"
-"*Microsoft.WindowsMaps*"
-"*Microsoft.Messaging*"
-"*Microsoft.MicrosoftSolitaireCollection*"
-"*Microsoft.MicrosoftOfficeHub*"
-"*Microsoft.Office.OneNote*"
-"*Microsoft.WindowsSoundRecorder*"
-"*Microsoft.OneConnect*"
-"*Microsoft.Microsoft3DViewer*"
-"*Microsoft.BingWeather*"
-"*Microsoft.Xbox.TCUI*"
-"*Microsoft.XboxApp*"
-"*Microsoft.XboxGameOverlay*"
-"*Microsoft.XboxGamingOverlay*"
-"*Microsoft.XboxIdentityProvider*"
-"*Microsoft.XboxSpeechToTextOverlay*"
-"*Microsoft.XboxGameCallableUI*"
-"*Microsoft.Print3D*"
-"*Microsoft.LanguageExperiencePacken-gb*"
-"*Microsoft.SkypeApp*"
-"*Clipchamp.Clipchamp*"
-"*Microsoft.GamingApp*"
-"*Microsoft.BingNews*"
-"*Microsoft.YourPhone*"
-"*MicrosoftTeams*"
-"*MicrosoftCorporationII.QuickAssist*"
+"WindowsAlarms"
+"windowscommunicationsapps"
+"Microsoft.WindowsFeedbackHub"
+"ZuneMusic"
+"ZuneVideo"
+"WindowsMaps"
+"Messaging"
+"MicrosoftSolitaireCollection"
+"MicrosoftOfficeHub"
+"Office.OneNote"
+"WindowsSoundRecorder"
+"OneConnect"
+"Microsoft3DViewer"
+"BingWeather"
+"Xbox.TCUI"
+"XboxApp"
+"XboxGameOverlay"
+"XboxGamingOverlay"
+"XboxIdentityProvider"
+"XboxSpeechToTextOverlay"
+"XboxGameCallableUI"
+"Print3D"
+"LanguageExperiencePacken-gb"
+"SkypeApp"
+"Clipchamp"
+"GamingApp"
+"BingNews"
+"MicrosoftCorporationII.QuickAssist"
+"YourPhone"
+"MicrosoftTeams"
 ) 
- # Remove apps for all users
- ForEach($app in $appname){ Get-AppxProvisionedPackage –online | where-object {$_.packagename –like $app} | Remove-AppxProvisionedPackage –online | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-RemoveApps.log" -Force
-         Write-Host -ForegroundColor DarkCyan "$app"
- } 
+ForEach($app in $appname){
+    try  {
+          # Get Package Name
+          $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
+          Write-Host "$($App) found. Attempting removal ... " -NoNewline
+   
+          # Attempt removeal
+          $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online -AllUsers
+                   
+          #Re-check existence
+          $AppProvisioningPackageNameReCheck = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
+          If ([string]::IsNullOrEmpty($AppProvisioningPackageNameReCheck) -and ($RemoveAppx.Online -eq $true)) {
+                   Write-Host @CheckIcon
+                   Write-Host " (Removed)"
+            }
+         }
+           catch [System.Exception] {
+               Write-Host " (Failed)"
+           }
+}
+
 Clear-Host 
 Write-Host -ForegroundColor Green "Install .Net Framework 3.x"
 $Result = Get-MyWindowsCapability -Match 'NetFX' -Detail
@@ -147,6 +164,7 @@ foreach ($Item in $Result) {
         $Item | Add-WindowsCapability -Online -ErrorAction Ignore | Out-Null
     }
 }
+
 Clear-Host
 #Install Driver updates
 Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
@@ -155,6 +173,7 @@ if ($UpdateDrivers) {
     Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
     Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-DriversUpdate.log" -force
 }
+
 Clear-Host
 #Install Software updates
 Write-Host -ForegroundColor Green "Install Windows Updates"
@@ -163,6 +182,7 @@ if ($UpdateWindows) {
     Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
     Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-WindowsUpdate.log" -force
 }
+
 Clear-Host
 #Install Software updates
 Write-Host -ForegroundColor Green "Install Software Updates"
