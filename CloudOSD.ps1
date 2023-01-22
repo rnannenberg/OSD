@@ -132,7 +132,7 @@ $appname = @(
 "*MicrosoftCorporationII.QuickAssist*"
 ) 
  # Remove apps for all users
- ForEach($app in $appname){ Get-AppxPackage -Allusers -Name $app | Remove-AppxPackage -ErrorAction SilentlyContinue | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-RemoveApps.log" -force
+ ForEach($app in $appname){ Get-AppxPackage -Name $app | Remove-AppxPackage -ErrorAction SilentlyContinue | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-RemoveApps.log" -force
          Write-Host -ForegroundColor DarkCyan "$app"
  } 
 Clear-Host 
