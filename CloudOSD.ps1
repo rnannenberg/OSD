@@ -4,6 +4,9 @@
 #   No Autopilot
 #   No Office Deployment Tool
 #================================================
+$Title = "Windows OSD phase"
+$host.UI.RawUI.WindowTitle = $Title
+
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
 Start-Sleep -Seconds 5
 
