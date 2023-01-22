@@ -95,40 +95,58 @@ Install-Module WingetTools -Force | Out-Null
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
 $appname = @( 
-"*Microsoft.WindowsAlarms*"
-"*microsoft.windowscommunicationsapps*"
-"*Microsoft.WindowsFeedbackHub*"
-"*Microsoft.ZuneMusic*"
-"*Microsoft.ZuneVideo*"
-"*Microsoft.WindowsMaps*"
-"*Microsoft.Messaging*"
-"*Microsoft.MicrosoftSolitaireCollection*"
-"*Microsoft.MicrosoftOfficeHub*"
-"*Microsoft.Office.OneNote*"
-"*Microsoft.WindowsSoundRecorder*"
-"*Microsoft.OneConnect*"
-"*Microsoft.Microsoft3DViewer*"
-"*Microsoft.BingWeather*"
-"*Microsoft.Xbox.TCUI*"
-"*Microsoft.XboxApp*"
-"*Microsoft.XboxGameOverlay*"
-"*Microsoft.XboxGamingOverlay*"
-"*Microsoft.XboxIdentityProvider*"
-"*Microsoft.XboxSpeechToTextOverlay*"
-"*Microsoft.XboxGameCallableUI*"
-"*Microsoft.Print3D*"
-"*Microsoft.LanguageExperiencePacken-gb*"
-"*Microsoft.SkypeApp*"
-"*Clipchamp.Clipchamp*"
-"*Microsoft.GamingApp*"
-"*Microsoft.BingNews*"
-"*MicrosoftCorporationII.QuickAssist*"
-"*Microsoft.YourPhone*"
-"*MicrosoftTeams*"
+"WindowsAlarms"
+"windowscommunicationsapps"
+"Microsoft.WindowsFeedbackHub"
+"ZuneMusic"
+"ZuneVideo"
+"WindowsMaps"
+"Messaging"
+"MicrosoftSolitaireCollection"
+"MicrosoftOfficeHub"
+"Office.OneNote"
+"WindowsSoundRecorder"
+"OneConnect"
+"Microsoft3DViewer"
+"BingWeather"
+"Xbox.TCUI"
+"XboxApp"
+"XboxGameOverlay"
+"XboxGamingOverlay"
+"XboxIdentityProvider"
+"XboxSpeechToTextOverlay"
+"XboxGameCallableUI"
+"Print3D"
+"LanguageExperiencePacken-gb"
+"SkypeApp"
+"Clipchamp"
+"GamingApp"
+"BingNews"
+"MicrosoftCorporationII.QuickAssist"
+"YourPhone"
+"MicrosoftTeams"
 ) 
- ForEach($app in $appname){ Get-AppxPackage -Name $app | Remove-AppxPackage -Allusers -ErrorAction SilentlyContinue 
-         Write-Host -ForegroundColor DarkCyan "$app"
- }
+ForEach($app in $appname){
+    try  {
+          # Get Package Name
+          $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
+          Write-Host "$($App) found. Attempting removal ... " -NoNewline
+   
+          # Attempt removeal
+          $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online -AllUsers
+                   
+          #Re-check existence
+          $AppProvisioningPackageNameReCheck = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
+          If ([string]::IsNullOrEmpty($AppProvisioningPackageNameReCheck) -and ($RemoveAppx.Online -eq $true)) {
+                   Write-Host @CheckIcon
+                   Write-Host " (Removed)"
+            }
+         }
+           catch [System.Exception] {
+               Write-Host " (Failed)"
+           }
+}
+   
  
 Write-Host -ForegroundColor Green "Install .Net Framework 3.x"
 $Result = Get-MyWindowsCapability -Match 'NetFX' -Detail
@@ -142,8 +160,8 @@ foreach ($Item in $Result) {
     }
 }
 
-Write-Host -ForegroundColor Green "Microsoft .NET Windows Desktop Runtime 7"
-winget Install Microsoft.DotNet.DesktopRuntime.7
+#Write-Host -ForegroundColor Green "Microsoft .NET Windows Desktop Runtime 7"
+#winget Install Microsoft.DotNet.DesktopRuntime.7
 
 Write-Host -ForegroundColor Green "Install Software Updates"
 Invoke-WGUpgrade -all
@@ -152,6 +170,7 @@ Invoke-WGUpgrade -all
 Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
 $UpdateDrivers = $true
 if ($UpdateDrivers) {
+    Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
     Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-DriversUpdate.log" -force
 }
 
@@ -164,8 +183,8 @@ if ($UpdateWindows) {
 }
 
 #Install Winget Software Updates
-Write-Host -ForegroundColor Green "Install Application Updates"
-invoke-wgupgrade -All -IncludeUnknown
+#Write-Host -ForegroundColor Green "Install Application Updates"
+#invoke-wgupgrade -All -IncludeUnknown
 
 #Check AssetTag
 Write-Host -ForegroundColor Green "Checking AssetTag"
