@@ -77,17 +77,17 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 
 # Register Powershell Modules and install tools
 Write-Host "Register PSGallery" -ForegroundColor Green
-Register-PSRepository -Default
+Register-PSRepository -Default | Out-Null
 Write-Host "Install PackageManagement Module" -ForegroundColor Green
-Install-Module -Name PackageManagement -Force | Out-Null
+Install-Module -Name PackageManagement | Out-Null
 Write-Host "Install PowerShellGet Module" -ForegroundColor Green
-Install-Module -Name PowerShellGet -Force | Out-Null
+Install-Module -Name PowerShellGet | Out-Null
 Write-Host -ForegroundColor Green "Install OSD Module"
 Install-Module OSD -Force | Out-Null
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
 Write-Host -ForegroundColor Green "Install WinGetTools Module"
-Install-Module WingetTools -Force
+Install-Module WingetTools -Force | Out-Null
 #Write-Host -ForegroundColor Green "Install WinGet Module"
 #Install-WinGet
 
