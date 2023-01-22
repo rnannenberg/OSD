@@ -19,7 +19,6 @@ $ErrorActionPreference = 'SilentlyContinue'
 #================================================
 #   [OS] Start-OSDCloud with Params
 #================================================
-Write-Host -ForegroundColor Green "Start OSDCloud"
 Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise -OSLanguage en-us -OSLicense Volume
 
 #================================================
