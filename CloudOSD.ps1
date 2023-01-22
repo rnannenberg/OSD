@@ -31,8 +31,9 @@ $OOBEcmdTasks = @'
 # Download and Install PowerShell 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 start /wait msiexec.exe /i C:\Windows\Temp\PowerShell-7.3.1-win-x64.msi /qb-! /norestart REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 ADD_PATH=1
-TITLE Setting-up OOBE phase
+# Starting OOBE installation/update phase
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
+# Cleanup
 del c:\Windows\Setup\scripts\*.*
 exit 
 '@
