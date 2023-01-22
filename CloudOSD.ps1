@@ -7,6 +7,10 @@
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
 Start-Sleep -Seconds 5
 
+# Change the ErrorActionPreference to 'SilentlyContinue'
+$ErrorActionPreference = 'Continue'
+#$ErrorActionPreference = 'SilentlyContinue'
+
 #Change Display Resolution for Virtual Machine
 if ((Get-MyComputerModel) -match 'Virtual') {
 Write-Host -ForegroundColor Green "Setting Display Resolution to 1600x"
@@ -18,9 +22,9 @@ Set-DisRes 1600
 #   Install and Import OSD Module
 #================================================
 Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
-Install-Module OSD -Force
+Install-Module OSD | Out-Null
 Write-Host -ForegroundColor Green "Importing OSD PowerShell Module"
-Import-Module OSD -Force
+Import-Module OSD | Out-Null
 
 #================================================
 #   [OS] Start-OSDCloud with Params
@@ -185,6 +189,6 @@ $OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding
 #   PostOS
 #   Restart-Computer
 #================================================
-Write-Host -ForegroundColor Green "Restarting in 20 seconds!"
-Start-Sleep -Seconds 20
+Write-Host -ForegroundColor Green "Restarting in 30 seconds!"
+Start-Sleep -Seconds 30
 wpeutil reboot
