@@ -13,12 +13,6 @@ Start-Sleep -Seconds 5
 # Change the ErrorActionPreference to 'SilentlyContinue'
 $ErrorActionPreference = 'SilentlyContinue'
 
-#Change Display Resolution for Virtual Machine
-if ((Get-MyComputerModel) -Contains 'VMWare') {
-Write-Host -ForegroundColor Green "Setting Display Resolution to 1600x"
-Set-DisRes 1600
-}
-
 #================================================
 #   [OS] Start-OSDCloud with Params
 #================================================
