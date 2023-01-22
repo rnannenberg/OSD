@@ -42,8 +42,8 @@ Write-Host -ForegroundColor Green "Creating Scripts for OOBE phase"
 $OOBEcmdTasks = @'
 @echo off
 # Download and Install PowerShell 7
-start /wait cmd.exe /c bitsadmin /transfer Net7Download /download /priority normal https://github.com/PowerShell/PowerShell/releases/download/v7.3.1/PowerShell-7.3.1-win-x64.msi c:\windows\temp\PowerShell-7.3.1-win-x64.msi
-start /wait cmd.exe /c msiexec.exe /package C:\Windows\Temp\PowerShell-7.3.1-win-x64.msi /quiet REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 ADD_PATH=1
+start /wait bitsadmin /transfer Net7Download /download /priority normal https://github.com/PowerShell/PowerShell/releases/download/v7.3.1/PowerShell-7.3.1-win-x64.msi c:\windows\temp\PowerShell-7.3.1-win-x64.msi
+start /wait msiexec.exe /package C:\Windows\Temp\PowerShell-7.3.1-win-x64.msi /quiet REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 ADD_PATH=1
 TITLE Setting-up OOBE phase
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 del c:\Windows\Setup\scripts\oobe.*
