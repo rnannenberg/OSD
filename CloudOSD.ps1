@@ -95,6 +95,7 @@ Install-Module WingetTools -Force | Out-Null
 #Write-Host -ForegroundColor Green "Install WinGet Module"
 #Install-WinGet
 
+Clear-Host
 # Remove apps from system
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
@@ -134,7 +135,7 @@ $appname = @(
  ForEach($app in $appname){ Get-AppxPackage -Allusers -Name $app | Remove-AppxPackage -ErrorAction SilentlyContinue | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-RemoveApps.log" -force
          Write-Host -ForegroundColor DarkCyan "$app"
  } 
- 
+Clear-Host 
 Write-Host -ForegroundColor Green "Install .Net Framework 3.x"
 $Result = Get-MyWindowsCapability -Match 'NetFX' -Detail
 foreach ($Item in $Result) {
@@ -146,7 +147,7 @@ foreach ($Item in $Result) {
         $Item | Add-WindowsCapability -Online -ErrorAction Ignore | Out-Null
     }
 }
-
+Clear-Host
 #Install Driver updates
 Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
 $UpdateDrivers = $true
@@ -154,7 +155,7 @@ if ($UpdateDrivers) {
     Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
     Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-DriversUpdate.log" -force
 }
-
+Clear-Host
 #Install Software updates
 Write-Host -ForegroundColor Green "Install Windows Updates"
 $UpdateWindows = $true
@@ -162,7 +163,7 @@ if ($UpdateWindows) {
     Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
     Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-WindowsUpdate.log" -force
 }
-
+Clear-Host
 Write-Host -ForegroundColor Green "OOBE update phase ready, Restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 Remove-Item C:\Drivers -Force -Recurse
