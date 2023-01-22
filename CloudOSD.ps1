@@ -198,6 +198,6 @@ $OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding
 #   PostOS
 #   Restart-Computer
 #================================================
-Write-Host -ForegroundColor Green "Restarting in 30 seconds!"
-Start-Sleep -Seconds 30
+Write-Host -ForegroundColor Green "Restarting in 10 seconds!"
+Start-Sleep -Seconds 10
 wpeutil reboot
