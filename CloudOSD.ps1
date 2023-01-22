@@ -80,12 +80,10 @@ Write-Host "Register PSGallery" -ForegroundColor Green
 Register-PSRepository -Default
 Write-Host "Install PackageManagement Module" -ForegroundColor Green
 Install-Module -Name PackageManagement -Force | Out-Null
-$Error.Clear()
 Write-Host "Install PowerShellGet Module" -ForegroundColor Green
-Install-Module -Name PowerShellGet _Force | Out-Null
+Install-Module -Name PowerShellGet -Force | Out-Null
 Write-Host -ForegroundColor Green "Install OSD Module"
 Install-Module OSD -Force | Out-Null
-$Error.Clear()
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
 Write-Host -ForegroundColor Green "Install WinGetTools Module"
