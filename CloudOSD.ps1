@@ -35,7 +35,7 @@ start /wait msiexec.exe /i C:\Windows\Temp\PowerShell-7.3.1-win-x64.msi /qb-! /n
 pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 # Cleanup
 del c:\Windows\Setup\scripts\*.*
-exit 
+#exit 
 '@
 $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding ascii -Force
 
