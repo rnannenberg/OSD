@@ -132,13 +132,18 @@ foreach ($Item in $Result) {
 
 Write-Host -ForegroundColor Green "Microsoft .NET Windows Desktop Runtime 7"
 winget Install Microsoft.DotNet.DesktopRuntime.7
+
 Write-Host -ForegroundColor Green "Install Software Updates"
 Invoke-WGUpgrade -all
+
+#Install Driver updates
 Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
 $UpdateDrivers = $true
 if ($UpdateDrivers) {
     Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-DriversUpdate.log" -force
 }
+
+#Install Software updates
 Write-Host -ForegroundColor Green "Install Windows Updates"
 $UpdateWindows = $true
 if ($UpdateWindows) {
@@ -149,6 +154,8 @@ if ($UpdateWindows) {
 #Install Winget Software Updates
 Write-Host -ForegroundColor Green "Install Application Updates"
 invoke-wgupgrade -All -IncludeUnknown
+
+#Check AssetTag
 Write-Host -ForegroundColor Green "Checking AssetTag"
 $AssetTag = (Get-WmiObject -Class Win32_SystemEnclosure | Select-Object SMBiosAssetTag).SMBiosAssetTag
 If ($null -eq $AssetTag){ 
