@@ -168,6 +168,7 @@ Clear-Host
 Write-Host -ForegroundColor Green "Install Software Updates"
 Get-WGUpgrade
 Invoke-WGUpgrade -all
+
 Write-Host -ForegroundColor Green "OOBE update phase ready, Restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 Remove-Item C:\Drivers -Force -Recurse
