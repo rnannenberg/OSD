@@ -39,8 +39,11 @@ Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise 
 Write-Host -ForegroundColor Green "Creating Scripts for OOBE phase"
 $OOBEcmdTasks = @'
 @echo off
+# Download and Install PowerShell 7
+bitsadmin /transfer Net7Download /download /priority normal https://github.com/PowerShell/PowerShell/releases/download/v7.3.1/PowerShell-7.3.1-win-x64.msi c:\windows\temp\PowerShell-7.3.1-win-x64.msi
+msiexec.exe /package C:\Windows\Temp\PowerShell-7.3.1-win-x64.msi /quiet REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 ADD_PATH=1
 TITLE Setting-up OOBE phase
-start /wait C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 del c:\Windows\Setup\scripts\oobe.*
 exit 
 '@
