@@ -8,8 +8,7 @@ Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
 Start-Sleep -Seconds 5
 
 # Change the ErrorActionPreference to 'SilentlyContinue'
-$ErrorActionPreference = 'Continue'
-#$ErrorActionPreference = 'SilentlyContinue'
+$ErrorActionPreference = 'SilentlyContinue'
 
 #Change Display Resolution for Virtual Machine
 if ((Get-MyComputerModel) -match 'Virtual') {
