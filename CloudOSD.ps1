@@ -164,6 +164,10 @@ if ($UpdateWindows) {
     Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-WindowsUpdate.log" -force
 }
 Clear-Host
+#Install Software updates
+Write-Host -ForegroundColor Green "Install Software Updates"
+Get-WGUpgrade
+Invoke-WGUpgrade -all
 Write-Host -ForegroundColor Green "OOBE update phase ready, Restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 Remove-Item C:\Drivers -Force -Recurse
