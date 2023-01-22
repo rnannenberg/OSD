@@ -77,22 +77,23 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 
 # Register Powershell Modules and install tools
 Write-Host "Register PSGallery" -ForegroundColor Green
-Register-PSRepository -Name PSGallery -SourceLocation https://www.powershellgallery.com/api/v2/ -PublishLocation https://www.powershellgallery.com/api/v2/package/ -ScriptSourceLocation https://www.powershellgallery.com/api/v2/items/psscript/ -ScriptPublishLocation https://www.powershellgallery.com/api/v2/package/ -InstallationPolicy Trusted -PackageManagementProvider NuGet
+Register-PSRepository -Default
 Write-Host "Install PackageManagement Module" -ForegroundColor Green
-Install-Module -Name PackageManagement | Out-Null
+Install-Module -Name PackageManagement -Force | Out-Null
 $Error.Clear()
 Write-Host "Install PowerShellGet Module" -ForegroundColor Green
-Install-Module -Name PowerShellGet | Out-Null
+Install-Module -Name PowerShellGet _Force | Out-Null
 Write-Host -ForegroundColor Green "Install OSD Module"
 Install-Module OSD -Force | Out-Null
 $Error.Clear()
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
-Write-Host -ForegroundColor Green "Install WinGet Tools"
+Write-Host -ForegroundColor Green "Install WinGetTools Module"
 Install-Module WingetTools -Force
-Write-Host -ForegroundColor Green "Install WinGet Module"
-Install-WinGet
+#Write-Host -ForegroundColor Green "Install WinGet Module"
+#Install-WinGet
 
+# Remove apps from system
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
 $appname = @( 
@@ -127,7 +128,6 @@ $appname = @(
 "*Microsoft.YourPhone*"
 "*MicrosoftTeams*"
 ) 
- # Remove apps from system
  ForEach($app in $appname){ Get-AppxPackage -Name $app | Remove-AppxPackage -Allusers -ErrorAction SilentlyContinue 
          Write-Host -ForegroundColor DarkCyan "$app"
  }
