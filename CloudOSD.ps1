@@ -99,58 +99,41 @@ Install-Module PSWindowsUpdate -Force | Out-Null
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
 $appname = @( 
-"WindowsAlarms"
-"windowscommunicationsapps"
-"Microsoft.WindowsFeedbackHub"
-"ZuneMusic"
-"ZuneVideo"
-"WindowsMaps"
-"Messaging"
-"MicrosoftSolitaireCollection"
-"MicrosoftOfficeHub"
-"Office.OneNote"
-"WindowsSoundRecorder"
-"OneConnect"
-"Microsoft3DViewer"
-"BingWeather"
-"Xbox.TCUI"
-"XboxApp"
-"XboxGameOverlay"
-"XboxGamingOverlay"
-"XboxIdentityProvider"
-"XboxSpeechToTextOverlay"
-"XboxGameCallableUI"
-"Print3D"
-"LanguageExperiencePacken-gb"
-"SkypeApp"
-"Clipchamp"
-"GamingApp"
-"BingNews"
-"MicrosoftCorporationII.QuickAssist"
-"YourPhone"
-"MicrosoftTeams"
+"*Microsoft.WindowsAlarms*"
+"*microsoft.windowscommunicationsapps*"
+"*Microsoft.WindowsFeedbackHub*"
+"*Microsoft.ZuneMusic*"
+"*Microsoft.ZuneVideo*"
+"*Microsoft.WindowsMaps*"
+"*Microsoft.Messaging*"
+"*Microsoft.MicrosoftSolitaireCollection*"
+"*Microsoft.MicrosoftOfficeHub*"
+"*Microsoft.Office.OneNote*"
+"*Microsoft.WindowsSoundRecorder*"
+"*Microsoft.OneConnect*"
+"*Microsoft.Microsoft3DViewer*"
+"*Microsoft.BingWeather*"
+"*Microsoft.Xbox.TCUI*"
+"*Microsoft.XboxApp*"
+"*Microsoft.XboxGameOverlay*"
+"*Microsoft.XboxGamingOverlay*"
+"*Microsoft.XboxIdentityProvider*"
+"*Microsoft.XboxSpeechToTextOverlay*"
+"*Microsoft.XboxGameCallableUI*"
+"*Microsoft.Print3D*"
+"*Microsoft.LanguageExperiencePacken-gb*"
+"*Microsoft.SkypeApp*"
+"*Clipchamp.Clipchamp*"
+"*Microsoft.GamingApp*"
+"*Microsoft.BingNews*"
+"*Microsoft.YourPhone*"
+"*MicrosoftTeams*"
+"*MicrosoftCorporationII.QuickAssist*"
 ) 
-ForEach($app in $appname){
-    try  {
-          # Get Package Name
-          $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
-          Write-Host "$($App) found. Attempting removal ... " -NoNewline
-   
-          # Attempt removeal
-          $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online -AllUsers
-                   
-          #Re-check existence
-          $AppProvisioningPackageNameReCheck = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
-          If ([string]::IsNullOrEmpty($AppProvisioningPackageNameReCheck) -and ($RemoveAppx.Online -eq $true)) {
-                   Write-Host @CheckIcon
-                   Write-Host " (Removed)"
-            }
-         }
-           catch [System.Exception] {
-               Write-Host " (Failed)"
-           }
-}
-   
+ # Remove apps for all users
+ ForEach($app in $appname){ Get-AppxPackage -Name $app | Remove-AppxPackage -ErrorAction SilentlyContinue | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-RemoveApps.log" -force
+         Write-Host -ForegroundColor DarkCyan "$app"
+ } 
  
 Write-Host -ForegroundColor Green "Install .Net Framework 3.x"
 $Result = Get-MyWindowsCapability -Match 'NetFX' -Detail
