@@ -90,8 +90,8 @@ Write-Host -ForegroundColor Green "Install OSD Module"
 Install-Module OSD -Force | Out-Null
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
-#Write-Host -ForegroundColor Green "Install WinGetTools Module"
-#Install-Module WingetTools -Force | Out-Null
+Write-Host -ForegroundColor Green "Install WinGetTools Module"
+Install-Module WingetTools -Force | Out-Null
 #Write-Host -ForegroundColor Green "Install WinGet Module"
 #Install-WinGet
 
