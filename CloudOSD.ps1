@@ -30,8 +30,6 @@ $OOBEcmdTasks = @'
 @echo off
 # Download and Install PowerShell 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
-start /wait msiexec.exe /i C:\Windows\Temp\PowerShell-7.3.1-win-x64.msi /qb-! /norestart REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 ADD_PATH=1
-# Starting OOBE installation/update phase with PowerShell 7
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -44,12 +42,7 @@ $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding
 $OOBEcmdTasks = @'
 $Title = "OOBE PowerShell 7 Download"
 $host.UI.RawUI.WindowTitle = $Title
-$env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
-$env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
-$Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
-$env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-Module -Name PowerShellGet | Out-Null
-Invoke-WebRequest https://github.com/PowerShell/PowerShell/releases/download/v7.3.1/PowerShell-7.3.1-win-x64.msi -o C:\Windows\Temp\PowerShell-7.3.1-win-x64.msi
+iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 '@
 $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
 
