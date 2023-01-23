@@ -130,9 +130,11 @@ ForEach($app in $appname){
           # Get Package Name
           $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
           Write-Host "$($App) found. Attempting removal ... " -NoNewline
-   
-          # Attempt removeal
-          $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online -AllUsers
+           
+          # Attempt removeal if Appx is installed
+          If (![String]::IsNullOrEmpty($AppProvisioningPackageName)) {
+            $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online -AllUsers -LogLevel 2 -LogPath c:\windows\temp\$(get-date -f yyyy-MM-dd)-RemoveApps.log
+          } 
                    
           #Re-check existence
           $AppProvisioningPackageNameReCheck = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
