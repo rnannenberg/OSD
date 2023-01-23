@@ -152,8 +152,8 @@ $appname = @(
 ForEach($app in $appname){
     try  {
           # Get Package Name
-          $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
-          Write-Host "$($App) found. Attempting removal ... " -NoNewline
+          $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object {$_.PackageName -like $App }
+          Write-Host "$($AppProvisioningPackageName) found. Attempting removal ... " -NoNewline
            
           # Attempt removeal if Appx is installed
           If ([String]::NotNullOrEmpty($AppProvisioningPackageName)) {
@@ -162,7 +162,7 @@ ForEach($app in $appname){
           } 
                    
           #Re-check existence
-          $AppProvisioningPackageNameReCheck = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
+          $AppProvisioningPackageNameReCheck = Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like $App }
           If ([string]::IsNullOrEmpty($AppProvisioningPackageNameReCheck) -and ($RemoveAppx.Online -eq $true)) {
                    Write-Host @CheckIcon
                    Write-Host " (Removed)"
