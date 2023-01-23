@@ -186,7 +186,7 @@ foreach ($Item in $Result) {
         Write-Host -ForegroundColor DarkGray "$($Item.DisplayName)"
     }
     else {
-        Write-Host -ForegroundColor DarkCyan "$($Item.DisplayName)"
+        Write-Host -ForegroundColor Green "$($Item.DisplayName)"
         $Item | Add-WindowsCapability -Online -ErrorAction Ignore | Out-Null
     }
 }
