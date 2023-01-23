@@ -167,7 +167,7 @@ ForEach($app in $appname){
                    
           #Re-check existence
           $AppProvisioningPackageNameReCheck = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
-          If ([string]::IsNullOrEmpty($AppProvisioningPackageNameReCheck) -and ($RemoveAppx.Online -eq $true)) {
+          If ([string]::IsNullOrEmpty($AppProvisioningPackageNameReCheck)) {
                    Write-Host @CheckIcon
                    Write-Host " (Removed)"
             }
