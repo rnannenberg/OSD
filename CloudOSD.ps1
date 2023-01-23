@@ -212,7 +212,7 @@ Start-Sleep -Seconds 10
 Clear-Host
 #Install Software updates
 Write-Host -ForegroundColor Green "Install Software Updates"
-Get-WGUpgrade
+#Get-WGUpgrade
 Invoke-WGUpgrade -all
 
 Write-Host -ForegroundColor Green "OOBE update phase ready, Restarting in 30 seconds!"
