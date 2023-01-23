@@ -154,7 +154,7 @@ ForEach($app in $appname){
            
           # Attempt removeal if Appx is installed
           If (![String]::IsNullOrEmpty($AppProvisioningPackageName)) {
-            $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online -AllUsers -LogLevel 2 -LogPath c:\windows\temp\$(get-date -f yyyy-MM-dd)-RemoveApps.log
+            $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online -AllUsers
           } 
                    
           #Re-check existence
