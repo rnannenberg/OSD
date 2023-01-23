@@ -113,11 +113,7 @@ Write-Host -ForegroundColor Green "Install OSD Module"
 Install-Module OSD -Force | Out-Null
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
-Write-Host -ForegroundColor Green "Install WinGetTools Module"
-Install-Module WingetTools -Force | Out-Null
-Write-Host -ForegroundColor Green "Install WinGet Module"
-Install-WinGet
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 5
 
 Clear-Host
 # Remove apps from system
@@ -213,11 +209,6 @@ if ($UpdateWindows) {
 Start-Sleep -Seconds 10
 
 Clear-Host
-#Install Software updates
-Write-Host -ForegroundColor Green "Install Software Updates"
-Get-WGUpgrade
-Invoke-WGUpgrade -All
-
 Write-Host -ForegroundColor Green "OOBE update phase ready, Restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 Remove-Item C:\Drivers -Force -Recurse
