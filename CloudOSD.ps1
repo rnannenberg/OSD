@@ -119,35 +119,35 @@ Clear-Host
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
 $appname = @( 
-"3DBuilder"
-"BingWeather"
-"GetHelp"
-"Getstarted"
-"Messaging"
-"Microsoft3DViewer"
-"MicrosoftOfficeHub"
-"MicrosoftSolitaireCollection"
-"MixedReality"
-"OneNote"
-"OneConnect"
-"People"
-"Print3D"
-"SkypeApp"
-"Wallet"
-"WindowsAlarms"
-"windowscommunicationsapps"
-"WindowsFeedbackHub"
-"WindowsMaps"
-"Xbox.TCUI"
-"XboxApp"
-"XboxGameOverlay"
-"XboxGamingOverlay"
-"XboxIdentityProvider"
-"XboxSpeechToTextOverlay"
-"YourPhone"
-"ZuneMusic"
-"ZuneVideo"
-"MicrosoftTeams"
+"*3DBuilder*"
+"*BingWeather*"
+"*GetHelp*"
+"*Getstarted*"
+"*Messaging*"
+"*Microsoft3DViewer*"
+"*MicrosoftOfficeHub*"
+"*MicrosoftSolitaireCollection*"
+"*MixedReality*"
+"*OneNote*"
+"*OneConnect*"
+"*People*"
+"*Print3D*"
+"*SkypeApp*"
+"*Wallet*"
+"*WindowsAlarms*"
+"*windowscommunicationsapps*"
+"*WindowsFeedbackHub*"
+"*WindowsMaps*"
+"*Xbox.TCUI*"
+"*XboxApp*"
+"*XboxGameOverlay*"
+"*XboxGamingOverlay*"
+"*XboxIdentityProvider*"
+"*XboxSpeechToTextOverlay*"
+"*YourPhone*"
+"*ZuneMusic*"
+"*ZuneVideo*"
+"*MicrosoftTeams*"
 ) 
 ForEach($app in $appname){
     try  {
@@ -158,18 +158,18 @@ ForEach($app in $appname){
           # Attempt removeal if Appx is installed
           If ([String]::NotNullOrEmpty($AppProvisioningPackageName)) {
             Write-Host "removing ... " -NoNewline
-            $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online
+            $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online -AllUsers
           } 
                    
           #Re-check existence
           $AppProvisioningPackageNameReCheck = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
-          If ([string]::IsNullOrEmpty($AppProvisioningPackageNameReCheck)) {
+          If ([string]::IsNullOrEmpty($AppProvisioningPackageNameReCheck) -and ($RemoveAppx.Online -eq $true)) {
                    Write-Host @CheckIcon
                    Write-Host " (Removed)"
             }
          }
            catch [System.Exception] {
-               Write-Host " (Failed)"
+               Write-Host " (Failed or $App not on system)"
            }
 }
 Start-Sleep -Seconds 10
