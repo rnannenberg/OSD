@@ -43,6 +43,7 @@ $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding
 $OOBEcmdTasks = @'
 $Title = "OOBE PowerShell 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
+write-host "PowerShell 7 Download and install" -ForegroundColor Green
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-PowerShell.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
@@ -61,6 +62,7 @@ $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding a
 $OOBEcmdTasks = @'
 $Title = "OOBE .Net Framework 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
+write-host ".Net Framework 7 Download and install" -ForegroundColor Green
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Framework.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
@@ -81,7 +83,7 @@ $Title = "OOBE installation/update phase"
 $host.UI.RawUI.WindowTitle = $Title
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
-write-host "Powershell Version: "$PSVersionTable.PSVersion
+write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
 
 # Change the ErrorActionPreference to 'SilentlyContinue'
 #$ErrorActionPreference = 'Continue'
