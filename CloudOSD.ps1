@@ -30,6 +30,7 @@ $OOBEcmdTasks = @'
 @echo off
 # Download and Install PowerShell 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -40,7 +41,7 @@ $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding
 #  ps.ps1
 #================================================
 $OOBEcmdTasks = @'
-$Title = "OOBE PowerShell 7 Download"
+$Title = "OOBE PowerShell 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
@@ -51,6 +52,21 @@ Invoke-RestMethod https://aka.ms/install-powershell.ps1) } -UseMSI -quiet"
 '@
 $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
 
+#================================================
+#  WinPE PostOS
+#  net.ps1
+#================================================
+$OOBEcmdTasks = @'
+$Title = "OOBE .Net Framework 7 Download and install"
+$host.UI.RawUI.WindowTitle = $Title
+$env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
+$env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
+$Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
+$env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+Install-Module -Name PowerShellGet | Out-Null
+Invoke-RestMethod https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
+'@
+$OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
 #================================================
 #   WinPE PostOS
 #   oobe.ps1
@@ -93,6 +109,10 @@ Install-Module WingetTools -Force | Out-Null
 #Write-Host -ForegroundColor Green "Install WinGet Module"
 #Install-WinGet
 Start-Sleep -Seconds 10
+
+Write-Host "Adding CMTrace to System" -ForegroundColor DarkGray
+$CMTraceURL = "https://github.com/rrosenau/OSDCloud/blob/41c1f77ef76510e51cb390b96902a071524ec3fe/cmtrace.exe"
+Invoke-WebRequest -UseBasicParsing -Uri $CMTraceURL -OutFile "c:\windows\system32\CMTrace.exe
 
 Clear-Host
 # Remove apps from system
