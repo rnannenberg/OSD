@@ -42,7 +42,12 @@ $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding
 $OOBEcmdTasks = @'
 $Title = "OOBE PowerShell 7 Download"
 $host.UI.RawUI.WindowTitle = $Title
-iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
+$env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
+$env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
+$Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
+$env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+Install-Module -Name PowerShellGet | Out-Null
+Invoke-RestMethod https://aka.ms/install-powershell.ps1) } -UseMSI -quiet"
 '@
 $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
 
