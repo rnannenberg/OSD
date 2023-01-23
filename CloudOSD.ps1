@@ -94,6 +94,7 @@ Write-Host -ForegroundColor Green "Install WinGetTools Module"
 Install-Module WingetTools -Force | Out-Null
 #Write-Host -ForegroundColor Green "Install WinGet Module"
 #Install-WinGet
+Start-Sleep -Seconds 10
 
 Clear-Host
 # Remove apps from system
@@ -151,6 +152,7 @@ ForEach($app in $appname){
                Write-Host " (Failed)"
            }
 }
+Start-Sleep -Seconds 10
 
 Clear-Host 
 Write-Host -ForegroundColor Green "Install .Net Framework 3.x"
@@ -164,6 +166,7 @@ foreach ($Item in $Result) {
         $Item | Add-WindowsCapability -Online -ErrorAction Ignore | Out-Null
     }
 }
+Start-Sleep -Seconds 10
 
 Clear-Host
 #Install Driver updates
@@ -182,6 +185,7 @@ if ($UpdateWindows) {
     Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
     Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-WindowsUpdate.log" -force
 }
+Start-Sleep -Seconds 10
 
 Clear-Host
 #Install Software updates
