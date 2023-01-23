@@ -105,9 +105,9 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Write-Host "Register PSGallery" -ForegroundColor Green
 Register-PSRepository -Default | Out-Null
 Write-Host "Install PackageManagement Module" -ForegroundColor Green
-Install-Module -Name PackageManagement | Out-Null
+Install-Module -Name PackageManagement -Force | Out-Null
 Write-Host "Install PowerShellGet Module" -ForegroundColor Green
-Install-Module -Name PowerShellGet | Out-Null
+Install-Module -Name PowerShellGet -Force | Out-Null
 Write-Host -ForegroundColor Green "Install OSD Module"
 Install-Module OSD -Force | Out-Null
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
