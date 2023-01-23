@@ -67,6 +67,7 @@ Install-Module -Name PowerShellGet | Out-Null
 Invoke-RestMethod https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
 '@
 $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
+
 #================================================
 #   WinPE PostOS
 #   oobe.ps1
@@ -109,10 +110,6 @@ Install-Module WingetTools -Force | Out-Null
 #Write-Host -ForegroundColor Green "Install WinGet Module"
 #Install-WinGet
 Start-Sleep -Seconds 10
-
-Write-Host "Adding CMTrace to System" -ForegroundColor DarkGray
-$CMTraceURL = "https://github.com/rrosenau/OSDCloud/blob/41c1f77ef76510e51cb390b96902a071524ec3fe/cmtrace.exe"
-Invoke-WebRequest -UseBasicParsing -Uri $CMTraceURL -OutFile "c:\windows\system32\CMTrace.exe
 
 Clear-Host
 # Remove apps from system
