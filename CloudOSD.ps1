@@ -86,8 +86,7 @@ $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -Error
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
 
 # Change the ErrorActionPreference to 'SilentlyContinue'
-$ErrorActionPreference = 'Continue'
-#$ErrorActionPreference = 'SilentlyContinue'
+$ErrorActionPreference = 'SilentlyContinue'
 
 # Set Environment
 Write-Host "Set Environment" -ForegroundColor Green
