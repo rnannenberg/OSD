@@ -31,7 +31,7 @@ $OOBEcmdTasks = @'
 # Download and Install PowerShell 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
-start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
 $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding ascii -Force
@@ -119,42 +119,38 @@ Clear-Host
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
 $appname = @( 
-"*3DBuilder*"
-"*BingWeather*"
-"*GetHelp*"
-"*Getstarted*"
-"*Messaging*"
-"*Microsoft3DViewer*"
-"*MicrosoftOfficeHub*"
-"*MicrosoftSolitaireCollection*"
-"*MixedReality*"
-"*OneNote*"
-"*OneConnect*"
-"*People*"
-"*Print3D*"
-"*SkypeApp*"
-"*Wallet*"
-"*WindowsAlarms*"
-"*windowscommunicationsapps*"
-"*WindowsFeedbackHub*"
-"*WindowsMaps*"
-"*Xbox.TCUI*"
-"*XboxApp*"
-"*XboxGameOverlay*"
-"*XboxGamingOverlay*"
-"*XboxIdentityProvider*"
-"*XboxSpeechToTextOverlay*"
-"*YourPhone*"
-"*ZuneMusic*"
-"*ZuneVideo*"
-"*MicrosoftTeams*"
+"Microsoft.BingNews",
+"Microsoft.BingWeather",
+"Microsoft.GamingApp",
+"Microsoft.GetHelp",
+"Microsoft.Getstarted",
+"Microsoft.MicrosoftOfficeHub",
+"Microsoft.MicrosoftSolitaireCollection",
+"Microsoft.People"
+"Microsoft.PowerAutomateDesktop",
+"Microsoft.Todos",
+"Microsoft.WindowsAlarm",
+"microsoft.windowscommunicationsapps",
+"Microsoft.WindowsFeedbackHub",
+"Microsoft.WindowsMaps",
+"Microsoft.Xbox.TCUI"
+"Microsoft.XboxGameOverlay",
+"Microsoft.XboxGamingOverlay",
+"Microsoft.XboxIdentityProvider",
+"Microsoft.XboxSpeechToTextOverlay",
+"Microsoft.YourPhone",
+"Microsoft.ZuneMusic",
+"Microsoft.ZuneVideo",
+"MicrosoftTeams"
 ) 
 ForEach($app in $appname){
     try  {
           # Get Package Name
-          $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object {$_.PackageName -like $App }
-          Write-Host "$($AppProvisioningPackageName) found. Attempting removal ... " -NoNewline
-           
+          $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $app } | Select-Object -ExpandProperty PackageName -First 1
+          If ([String]::NotNullOrEmpty($AppProvisioningPackageName)) {
+            Write-Host "$($AppProvisioningPackageName) found. Attempting removal ... " -NoNewline
+          }
+          
           # Attempt removeal if Appx is installed
           If ([String]::NotNullOrEmpty($AppProvisioningPackageName)) {
             Write-Host "removing ... " -NoNewline
