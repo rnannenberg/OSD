@@ -139,11 +139,11 @@ $appname = @(
 "Microsoft.WindowsMaps"
 "Microsoft.Xbox.TCUI"
 "Microsoft.XboxGameOverlay"
-"Microsoft.XboxGamingOverlay",
+"Microsoft.XboxGamingOverlay"
 "Microsoft.XboxIdentityProvider"
 "Microsoft.XboxSpeechToTextOverlay"
 "Microsoft.YourPhone"
-"Microsoft.ZuneMusic",
+"Microsoft.ZuneMusic"
 "Microsoft.ZuneVideo"
 "MicrosoftTeams"
 ) 
