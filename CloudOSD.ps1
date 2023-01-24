@@ -12,9 +12,10 @@ Start-Sleep -Seconds 5
 
 #================================================
 #   Change the ErrorActionPreference
-#   to 'SilentlyContinue'
+#   to 'SilentlyContinue' Or 'Continue'
 #================================================
 $ErrorActionPreference = 'SilentlyContinue'
+#$ErrorActionPreference = 'Continue'
 
 #================================================
 #   [OS] Start-OSDCloud with Params
@@ -88,7 +89,8 @@ $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -Error
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
 
 # Change the ErrorActionPreference to 'SilentlyContinue'
-$ErrorActionPreference = 'SilentlyContinue'
+#$ErrorActionPreference = 'SilentlyContinue'
+$ErrorActionPreference = 'Continue'
 
 # Set Environment
 Write-Host "Set Environment" -ForegroundColor Green
@@ -167,7 +169,7 @@ ForEach($app in $appname){
                    Write-Host @CheckIcon
                    Write-Host " (Removed)"
             }
-         }
+        }
            catch [System.Exception] {
                Write-Host " (Failed or $App not on system)"
            }
