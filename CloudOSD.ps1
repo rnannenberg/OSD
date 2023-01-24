@@ -108,8 +108,8 @@ $InstallFolder = "C:\Windows\Temp"
 		
 		#Install WinGet MSIXBundle 
 		Try {
-			Write-Host "Installing MSIXBundle for App Installer..." 
-			#Add-AppxProvisionedPackage -Online -PackagePath "$InstallFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -SkipLicense 
+			Write-Host "Installing MSIXBundle for App Installer... this can take a while!" 
+			Add-AppxProvisionedPackage -Online -PackagePath "$InstallFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -SkipLicense 
 			Write-Host "Installed MSIXBundle for App Installer" -ForegroundColor Green
 			}
 		Catch {
