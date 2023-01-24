@@ -33,7 +33,7 @@ $OOBEcmdTasks = @'
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
 # Below a PS 7 session for testing in system context, # when not needed 
-#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -125,28 +125,28 @@ Clear-Host
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
 $appname = @( 
-"BingNews",
-"BingWeather",
-"GamingApp",
-"GetHelp",
-"Getstarted",
-"MicrosoftOfficeHub",
-"MicrosoftSolitaireCollection",
-"People",
-"PowerAutomateDesktop",
-"Todos",
-"WindowsAlarm",
-"windowscommunicationsapps",
-"WindowsFeedbackHub",
-"WindowsMaps",
-"Xbox.TCUI",
-"XboxGameOverlay",
-"XboxGamingOverlay",
-"XboxIdentityProvider",
-"XboxSpeechToTextOverlay",
-"YourPhone",
-"ZuneMusic",
-"ZuneVideo",
+"Microsoft.BingNews"
+"Microsoft.BingWeather"
+"Microsoft.GamingApp"
+"Microsoft.GetHelp"
+"Microsoft.Getstarted"
+"Microsoft.MicrosoftOfficeHub"
+"Microsoft.MicrosoftSolitaireCollection"
+"Microsoft.People"
+"Microsoft.PowerAutomateDesktop"
+"Microsoft.Todos"
+"Microsoft.WindowsAlarm"
+"Microsoft.windowscommunicationsapps"
+"Microsoft.WindowsFeedbackHub"
+"Microsoft.WindowsMaps"
+"Microsoft.Xbox.TCUI",
+"Microsoft.XboxGameOverlay"
+"Microsoft.XboxGamingOverlay",
+"Microsoft.XboxIdentityProvider"
+"Microsoft.XboxSpeechToTextOverlay"
+"Microsoft.YourPhone"
+"Microsoft.ZuneMusic",
+"Microsoft.ZuneVideo"
 "MicrosoftTeams"
 ) 
 ForEach($app in $appname){
