@@ -132,14 +132,14 @@ $appname = @(
 "Getstarted",
 "MicrosoftOfficeHub",
 "MicrosoftSolitaireCollection",
-"People"
+"People",
 "PowerAutomateDesktop",
 "Todos",
 "WindowsAlarm",
 "windowscommunicationsapps",
 "WindowsFeedbackHub",
 "WindowsMaps",
-"Xbox.TCUI"
+"Xbox.TCUI",
 "XboxGameOverlay",
 "XboxGamingOverlay",
 "XboxIdentityProvider",
