@@ -33,7 +33,7 @@ $OOBEcmdTasks = @'
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
 # Below a PS 7 session for testing in system context, # when not needed 
-start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -116,8 +116,6 @@ Write-Host -ForegroundColor Green "Install OSD Module"
 Install-Module OSD -Force | Out-Null
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
-Write-Host -ForegroundColor Green "Install WinGetTools Module"
-Install-Module WingetTools -Force | Out-Null
 Start-Sleep -Seconds 5
 
 Clear-Host
