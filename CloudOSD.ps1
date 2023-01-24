@@ -121,28 +121,28 @@ Clear-Host
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
 $appname = @( 
-"Microsoft.BingNews",
-"Microsoft.BingWeather",
-"Microsoft.GamingApp",
-"Microsoft.GetHelp",
-"Microsoft.Getstarted",
-"Microsoft.MicrosoftOfficeHub",
-"Microsoft.MicrosoftSolitaireCollection",
-"Microsoft.People"
-"Microsoft.PowerAutomateDesktop",
-"Microsoft.Todos",
-"Microsoft.WindowsAlarm",
-"microsoft.windowscommunicationsapps",
-"Microsoft.WindowsFeedbackHub",
-"Microsoft.WindowsMaps",
-"Microsoft.Xbox.TCUI"
-"Microsoft.XboxGameOverlay",
-"Microsoft.XboxGamingOverlay",
-"Microsoft.XboxIdentityProvider",
-"Microsoft.XboxSpeechToTextOverlay",
-"Microsoft.YourPhone",
-"Microsoft.ZuneMusic",
-"Microsoft.ZuneVideo",
+"BingNews",
+"BingWeather",
+"GamingApp",
+"GetHelp",
+"Getstarted",
+"MicrosoftOfficeHub",
+"MicrosoftSolitaireCollection",
+"People"
+"PowerAutomateDesktop",
+"Todos",
+"WindowsAlarm",
+"windowscommunicationsapps",
+"WindowsFeedbackHub",
+"WindowsMaps",
+"Xbox.TCUI"
+"XboxGameOverlay",
+"XboxGamingOverlay",
+"XboxIdentityProvider",
+"XboxSpeechToTextOverlay",
+"YourPhone",
+"ZuneMusic",
+"ZuneVideo",
 "MicrosoftTeams"
 ) 
 ForEach($app in $appname){
