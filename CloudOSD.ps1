@@ -32,8 +32,9 @@ $OOBEcmdTasks = @'
 # Download and Install PowerShell 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\installwinget.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -43,7 +44,7 @@ $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding
 #  WinPE PostOS
 #  ps.ps1
 #================================================
-$OOBEcmdTasks = @'
+$OOBEpsTasks = @'
 $Title = "OOBE PowerShell 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
 write-host "PowerShell 7 Download and install" -ForegroundColor Green
@@ -56,13 +57,13 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet | Out-Null
 iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 '@
-$OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
+$OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
 
 #================================================
 #  WinPE PostOS
 #  net.ps1
 #================================================
-$OOBEcmdTasks = @'
+$OOBEnetTasks = @'
 $Title = "OOBE .Net Framework 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
 write-host ".Net Framework 7 Download and install" -ForegroundColor Green
@@ -75,7 +76,51 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet | Out-Null
 iex "& { $(irm https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
 '@
-$OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
+$OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
+
+#================================================
+#  WinPE PostOS
+#  installwinget.ps1
+#================================================
+$OOBEwingetTasks = @'
+$Title = "OOBE Download and install WinGet"
+$host.UI.RawUI.WindowTitle = $Title
+write-host "WinGet download and install" -ForegroundColor Green
+$dc = New-Object net.webclient
+$dc.UseDefaultCredentials = $true
+$dc.Headers.Add("user-agent", "Inter Explorer")
+$dc.Headers.Add("X-FORMS_BASED_AUTH_ACCEPTED", "f")
+
+#temp folder
+$InstallFolder = "C:\Windows\Temp"
+	#Check Winget Install
+	Write-Host "Checking if Winget is installed" -ForegroundColor Yellow
+	$TestWinget = Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.DesktopAppInstaller"}
+	If ([Version]$TestWinGet. Version -gt "2022.506.16.0") 
+	{
+		Write-Host "WinGet is Installed" -ForegroundColor Green
+	}Else 
+		{
+		#Download WinGet MSIXBundle
+		Write-Host "Not installed. Downloading WinGet..." 
+		$WinGetURL = "https://aka.ms/getwinget"
+		$dc.DownloadFile($WinGetURL, "$InstallFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle")
+		
+		#Install WinGet MSIXBundle 
+		Try {
+			Write-Host "Installing MSIXBundle for App Installer..." 
+			#Add-AppxProvisionedPackage -Online -PackagePath "$InstallFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -SkipLicense 
+			Write-Host "Installed MSIXBundle for App Installer" -ForegroundColor Green
+			}
+		Catch {
+			Write-Host "Failed to install MSIXBundle for App Installer..." -ForegroundColor Red
+			  } 
+	
+		#Remove WinGet MSIXBundle 
+		Remove-Item -Path "$InstallFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Force -ErrorAction Continue
+		}
+'@
+$OOBEwingetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\installwinget.ps1' -Encoding ascii -Force
 
 #================================================
 #   WinPE PostOS
