@@ -31,7 +31,8 @@ $OOBEcmdTasks = @'
 # Download and Install PowerShell 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
-start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+# Below a PS 7 session for testing in system context, # when not needed 
+#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -148,12 +149,12 @@ ForEach($app in $appname){
     try  {
           # Get Package Name
           $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $app } | Select-Object -ExpandProperty PackageName -First 1
-          If ([String]::NotNullOrEmpty($AppProvisioningPackageName)) {
+          If (![String]::IsNullOrEmpty($AppProvisioningPackageName)) {
             Write-Host "$($AppProvisioningPackageName) found. Attempting removal ... " -NoNewline
           }
           
           # Attempt removeal if Appx is installed
-          If ([String]::NotNullOrEmpty($AppProvisioningPackageName)) {
+          If (![String]::IsNullOrEmpty($AppProvisioningPackageName)) {
             Write-Host "removing ... " -NoNewline
             $RemoveAppx = Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online -AllUsers
           } 
