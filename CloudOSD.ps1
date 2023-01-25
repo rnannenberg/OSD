@@ -9,7 +9,7 @@ $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
 
 #================================================
-#   [OS] Start-OSDCloud with Params
+#   [OOBE] Disable Shift F10
 #================================================
 $Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
 If(!(test-path $Tagpath))
