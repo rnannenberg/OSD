@@ -7,16 +7,6 @@
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
-
-#================================================
-#   [OOBE] Disable Shift F10
-#================================================
-$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
-If(!(test-path $Tagpath))
-    {
-      New-Item -ItemType file -Force -Path $Tagpath
-      Write-Host -ForegroundColor green "Shift F10 disabled!"
-}
 Start-Sleep -Seconds 5
 
 #================================================
@@ -265,6 +255,17 @@ Start-Sleep -Seconds 10
 
 Clear-Host
 Write-Host -ForegroundColor Green "OOBE update phase ready, Restarting in 30 seconds!"
+
+#================================================
+#   [OOBE] Disable Shift F10
+#================================================
+$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
+If(!(test-path $Tagpath))
+    {
+      New-Item -ItemType file -Force -Path $Tagpath | Out-Null
+      Write-Host -ForegroundColor green "Shift F10 disabled!"
+}
+
 Start-Sleep -Seconds 30
 Remove-Item C:\Drivers -Force -Recurse
 Remove-Item C:\Intel -Force -Recurse
