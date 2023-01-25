@@ -272,7 +272,7 @@ $Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
 If(!(test-path $Tagpath))
     {
       New-Item -ItemType file -Force -Path $Tagpath | Out-Null
-      Write-Host -ForegroundColor green "Shift F10 disabled!"
+      Write-Host -ForegroundColor green "OOBE Shift F10 disabled!"
 }
 #================================================
 #   PostOS
