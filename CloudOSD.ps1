@@ -27,14 +27,13 @@ Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise 
 #================================================ 
 $XmlDirectory = "C:\Windows\Setup\Scripts"
 $wifilist = $(netsh.exe wlan show profiles)
-if ($null -ne $wifilist -and
-    $wifilist -like 'Profiles on interface Wi-Fi*') {
-        $ListOfSSID = ($wifilist | Select-string -pattern "\w*All User Profile.*: (.*)" -allmatches).Matches | ForEach-Object {$_.Groups[1].Value}
-        $NumberOfWifi = $ListOfSSID.count
-        foreach ($SSID in $ListOfSSID){
-            try {
-                Write-Host -ForegroundColor green "Exporting WiFi SSID:$SSID"
-                $XML = $(netsh.exe wlan export profile name=`"$SSID`" key=clear folder=`"$XmlDirectory`")
+if ($null -ne $wifilist -and $wifilist -like 'Profiles on interface Wi-Fi*') {
+    $ListOfSSID = ($wifilist | Select-string -pattern "\w*All User Profile.*: (.*)" -allmatches).Matches | ForEach-Object {$_.Groups[1].Value}
+    $NumberOfWifi = $ListOfSSID.count
+    foreach ($SSID in $ListOfSSID){
+        try {
+            Write-Host -ForegroundColor green "Exporting WiFi SSID:$SSID"
+            $XML = $(netsh.exe wlan export profile name=`"$SSID`" key=clear folder=`"$XmlDirectory`")
             }
             catch [System.Exception] {
                 Write-Host -ForegroundColor Red "Failed export of Wifi on system"
