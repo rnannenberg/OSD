@@ -100,6 +100,7 @@ If (![String]::IsNullOrEmpty($XMLExist)) {
         write-host "Importing WifI network: $_.name" -ForegroundColor Green
     }
 }
+Start-Sleep -Seconds 10
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encoding ascii -Force
 
