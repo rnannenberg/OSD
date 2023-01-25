@@ -23,6 +23,28 @@ $ErrorActionPreference = 'SilentlyContinue'
 Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise -OSLanguage en-us -OSLicense Volume
 
 #================================================
+#   [OS] Check WiFi and export profile
+#================================================ 
+$XmlDirectory = "C:\Windows\Setup\Scripts"
+$wifilist = $(netsh.exe wlan show profiles)
+if ($wifilist -match "There is no wireless interface on the system."){
+        Write-Output -ForegroundColor Yellow $wifilist 
+    }
+    Else {
+        $ListOfSSID = ($wifilist | Select-string -pattern "\w*All User Profile.*: (.*)" -allmatches).Matches | ForEach-Object {$_.Groups[1].Value}
+        $NumberOfWifi = $ListOfSSID.count
+        foreach ($SSID in $ListOfSSID){
+            try {
+                Write-Host -ForegroundColor green "Exporting WiFi SSDID:$SSID"
+                $XML = $(netsh.exe wlan export profile name=`"$SSID`" key=clear folder=`"$XmlDirectory`")
+            }
+        catch [System.Exception] {
+            Write-Host -ForegroundColor Yellow "Failed export of Wifi on system"
+            }
+        }
+    }
+
+#================================================
 #  WinPE PostOS
 #  oobe.cmd
 #================================================
