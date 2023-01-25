@@ -256,16 +256,6 @@ Start-Sleep -Seconds 10
 Clear-Host
 Write-Host -ForegroundColor Green "OOBE update phase ready, Restarting in 30 seconds!"
 
-#================================================
-#   [OOBE] Disable Shift F10
-#================================================
-$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
-If(!(test-path $Tagpath))
-    {
-      New-Item -ItemType file -Force -Path $Tagpath | Out-Null
-      Write-Host -ForegroundColor green "Shift F10 disabled!"
-}
-
 Start-Sleep -Seconds 30
 Remove-Item C:\Drivers -Force -Recurse
 Remove-Item C:\Intel -Force -Recurse
@@ -275,6 +265,15 @@ Restart-Computer -Force
 '@
 $OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding ascii -Force
 
+#================================================
+#   [OOBE] Disable Shift F10
+#================================================
+$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
+If(!(test-path $Tagpath))
+    {
+      New-Item -ItemType file -Force -Path $Tagpath | Out-Null
+      Write-Host -ForegroundColor green "Shift F10 disabled!"
+}
 #================================================
 #   PostOS
 #   Restart-Computer
