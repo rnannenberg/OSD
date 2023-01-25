@@ -55,7 +55,7 @@ $OOBEcmdTasks = @'
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -79,6 +79,26 @@ Install-Module -Name PowerShellGet | Out-Null
 iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
+
+#================================================
+#  WinPE PostOS
+#  wifi.ps1
+#================================================
+$OOBEnetTasks = @'
+$Title = "OOBE Add WiFi SSID's to the system if exist"
+$host.UI.RawUI.WindowTitle = $Title
+write-host "Searching for save WifI networks" -ForegroundColor Green
+$XmlDirectory = "C:\Windows\Setup\Scripts"
+$XMLExist = Get-ChildItem -Path $XmlDirectory -Filter '*.xml' -File
+If (![String]::IsNullOrEmpty($XMLExist)) {
+    Start-Service -Name "WlanSvc"
+    Get-ChildItem $XmlDirectory | Where-Object {$_.extension -eq ".xml"} | ForEach-Object {
+        netsh wlan add profile filename=($XmlDirectory+"\"+$_.name)
+        write-host "Importing WifI network: $_.name" -ForegroundColor Green
+    }
+}
+'@
+$OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encoding ascii -Force
 
 #================================================
 #  WinPE PostOS
