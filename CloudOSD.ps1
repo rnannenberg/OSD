@@ -37,7 +37,8 @@ if ($null -ne $wifilist -and
                 $XML = $(netsh.exe wlan export profile name=`"$SSID`" key=clear folder=`"$XmlDirectory`")
             }
             catch [System.Exception] {
-                Write-Host -ForegroundColor Yellow "Failed export of Wifi on system"
+                Write-Host -ForegroundColor Red "Failed export of Wifi on system"
+                Write-Host -ForegroundColor Red "The error is: $XML"
             }
         }
     }
