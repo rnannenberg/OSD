@@ -38,8 +38,8 @@ if ($wifilist -match "There is no wireless interface on the system."){
                 Write-Host -ForegroundColor green "Exporting WiFi SSDID:$SSID"
                 $XML = $(netsh.exe wlan export profile name=`"$SSID`" key=clear folder=`"$XmlDirectory`")
             }
-        catch [System.Exception] {
-            Write-Host -ForegroundColor Yellow "Failed export of Wifi on system"
+            catch [System.Exception] {
+                Write-Host -ForegroundColor Yellow "Failed export of Wifi on system"
             }
         }
     }
