@@ -51,8 +51,11 @@ if ($wifilist -match "There is no wireless interface on the system."){
 Write-Host -ForegroundColor Green "Creating Scripts for OOBE phase"
 $OOBEcmdTasks = @'
 @echo off
+# Import WiFi XML's if they exist
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\wifi.ps1
 # Download and Install PowerShell 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
+# Download and Install .Net Framework 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
