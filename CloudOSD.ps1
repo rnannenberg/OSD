@@ -6,8 +6,17 @@
 #================================================
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
-
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
+
+#================================================
+#   [OS] Start-OSDCloud with Params
+#================================================
+$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
+If(!(test-path $Tagpath))
+    {
+      New-Item -ItemType file -Force -Path $Tagpath
+      Write-Host -ForegroundColor green "Shift F10 disabled!"
+}
 Start-Sleep -Seconds 5
 
 #================================================
