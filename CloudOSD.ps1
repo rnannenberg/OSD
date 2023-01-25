@@ -33,7 +33,7 @@ if ($null -ne $wifilist -and
         $NumberOfWifi = $ListOfSSID.count
         foreach ($SSID in $ListOfSSID){
             try {
-                Write-Host -ForegroundColor green "Exporting WiFi SSDID:$SSID"
+                Write-Host -ForegroundColor green "Exporting WiFi SSID:$SSID"
                 $XML = $(netsh.exe wlan export profile name=`"$SSID`" key=clear folder=`"$XmlDirectory`")
             }
             catch [System.Exception] {
