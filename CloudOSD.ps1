@@ -27,10 +27,8 @@ Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise 
 #================================================ 
 $XmlDirectory = "C:\Windows\Setup\Scripts"
 $wifilist = $(netsh.exe wlan show profiles)
-if ($wifilist -match "There is no wireless interface on the system."){
-        Write-Output -ForegroundColor Yellow $wifilist 
-    }
-    Else {
+if ($null -ne $wifilist -and
+    $wifilist -like 'Profiles on interface Wi-Fi*') {
         $ListOfSSID = ($wifilist | Select-string -pattern "\w*All User Profile.*: (.*)" -allmatches).Matches | ForEach-Object {$_.Groups[1].Value}
         $NumberOfWifi = $ListOfSSID.count
         foreach ($SSID in $ListOfSSID){
@@ -42,6 +40,9 @@ if ($wifilist -match "There is no wireless interface on the system."){
                 Write-Host -ForegroundColor Yellow "Failed export of Wifi on system"
             }
         }
+    }
+    Else {
+        Write-Host -ForegroundColor Yellow $wifilist
     }
 
 #================================================
