@@ -162,6 +162,8 @@ Write-Host -ForegroundColor Green "Install OSD Module"
 Install-Module OSD -Force | Out-Null
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
+Write-Host -ForegroundColor Green "Install HPCMSL Module"
+Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
 Start-Sleep -Seconds 5
 
 Clear-Host
