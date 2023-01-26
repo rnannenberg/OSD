@@ -92,7 +92,7 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding as
 $OOBEnetTasks = @'
 $Title = "OOBE Add WiFi SSID's to the system if exist"
 $host.UI.RawUI.WindowTitle = $Title
-write-host "Searching for save WifI networks" -ForegroundColor Green
+write-host "Searching for saved WifI networks" -ForegroundColor Green
 $XmlDirectory = "C:\Windows\Setup\Scripts"
 $XMLExist = Get-ChildItem -Path $XmlDirectory -Filter '*.xml' -File
 If (![String]::IsNullOrEmpty($XMLExist)) {
