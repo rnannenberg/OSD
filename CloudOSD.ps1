@@ -145,7 +145,7 @@ If $Manufacturer -eq "HP") {
     Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
 {
 '@
-$OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\hp.ps1' -Encoding ascii -Force
+$OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding ascii -Force
 
 #================================================
 #   WinPE PostOS
