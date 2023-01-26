@@ -141,8 +141,11 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
     Write-Host -ForegroundColor Green "Install HPCMSL Module"
     Install-Module -Name HPCMSL -Force -AcceptLicens
-    write-host "HP Bios settings check revovery settings" -ForegroundColor Green
     Start-Sleep -Seconds 10
+    write-host "HP Bios settings check revovery settings" -ForegroundColor Green
+    If ((Get-HPSecurePlatformState).State -eq "Provisioned") {
+    
+    }
 }
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding ascii -Force
