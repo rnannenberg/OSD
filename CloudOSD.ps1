@@ -57,6 +57,8 @@ start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scri
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 # Download and Install .Net Framework 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
+# BIOS Check
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
@@ -122,6 +124,28 @@ Install-Module -Name PowerShellGet | Out-Null
 iex "& { $(irm https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
+
+#================================================
+#  WinPE PostOS
+#  Bios.ps1
+#================================================
+$OOBEnetTasks = @'
+$Title = "Check Bios settings"
+$host.UI.RawUI.WindowTitle = $Title
+$env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
+$env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
+$Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
+$env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+Write-Host -ForegroundColor Green "Install HPCMSL Module"
+$Manufacturer = (Get-CimInstance -ClassName Win32_BIOS).Manufacturer
+If $Manufacturer -eq "HP") {
+    $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-HPRevovery.log"
+    $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
+    write-host "HP Bios settings check revovery settings" -ForegroundColor Green
+    Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
+{
+'@
+$OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\hp.ps1' -Encoding ascii -Force
 
 #================================================
 #   WinPE PostOS
