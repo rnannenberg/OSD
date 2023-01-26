@@ -140,8 +140,8 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-HPRevovery.log"
     $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
     Write-Host -ForegroundColor Green "Install HPCMSL Module"
-    write-host "HP Bios settings check revovery settings" -ForegroundColor Green
     Install-Module -Name HPCMSL -Force -AcceptLicens
+    write-host "HP Bios settings check revovery settings" -ForegroundColor Green
     Start-Sleep -Seconds 10
 }
 '@
