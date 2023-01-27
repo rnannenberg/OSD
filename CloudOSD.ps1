@@ -72,10 +72,10 @@ start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scri
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 # Download and Install .Net Framework 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
-# Check IF VM
+# Check IF VM and install things
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -154,7 +154,7 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding 
 #  vm.ps1
 #================================================
 $OOBEpsTasks = @'
-$Title = "Check if machine is a VMware VM"
+$Title = "Check if machine is a VM"
 $host.UI.RawUI.WindowTitle = $Title
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
@@ -164,14 +164,13 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-Module -Name PowerShellGet | Out-Null
-If ((Get-CimInstance -ClassName Win32_computersystem).model -eq "VMware Virtual Platform") {
+If ((Get-CimInstance -ClassName Win32_computersystem).model -contains "VMware") {
     write-host "Checking latest VMware tools" -ForegroundColor Green
     $vmwareTools = "https://packages.vmware.com/tools/esx/latest/windows/x64/index.html"
     $pattern = "[0-9]+\.[0-9]+\.[0-9]+\-[0-9]+\-x86_64"
     
     #get the raw page content
-    $pageContent=(wget -UseBasicParsing -Uri $vmwareTools).content
+    $pageContent=(Invoke-WebRequest -UseBasicParsing -Uri $vmwareTools).content
     
     #change one big string into many strings, then find only the line with the version number
     $interestingLine = ($pageContent.split("`n") | Select-string -Pattern $pattern).tostring().trim()
@@ -180,8 +179,11 @@ If ((Get-CimInstance -ClassName Win32_computersystem).model -eq "VMware Virtual 
     $filename = (($interestingLine.Replace(" ","").Split("=") | Select-string -Pattern $pattern).ToString().Trim().Split("`""))[1]
  
     $url = "https://packages.vmware.com/tools/esx/latest/windows/x64/$($filename)"
-    Write-Verbose "Downloading and installing $url"
-    iex "& { $(irm $url) } /S /v /qb REBOOT=R"
+    write-host "Downloading and installing $url"
+    Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename"
+    $params = "/S /v /qn REBOOT=R ADDLOCAL=ALL"
+    Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
+}
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding ascii -Force
 
