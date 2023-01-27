@@ -164,7 +164,7 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-If ((Get-CimInstance -ClassName Win32_computersystem).model -contains "VMware") {
+If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     write-host "Checking latest VMware tools" -ForegroundColor Green
     $vmwareTools = "https://packages.vmware.com/tools/esx/latest/windows/x64/index.html"
     $pattern = "[0-9]+\.[0-9]+\.[0-9]+\-[0-9]+\-x86_64"
