@@ -102,6 +102,27 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding as
 
 #================================================
 #  WinPE PostOS
+#  VcRedist.ps1
+#================================================
+$OOBEpsTasks = @'
+$Title = "OOBE VcRedist Download and install supported versions"
+$host.UI.RawUI.WindowTitle = $Title
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
+write-host "PowerShell 7 Download and install" -ForegroundColor Green
+$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-PowerShell.log"
+$null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
+$env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
+$env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
+$Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
+$env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+Install-Module -Name VcRedist -Force | Out-Null
+iex "& { $(irm https://vcredist.com/install.ps1) }
+'@
+$OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encoding ascii -Force
+
+#================================================
+#  WinPE PostOS
 #  wifi.ps1
 #================================================
 $OOBEnetTasks = @'
