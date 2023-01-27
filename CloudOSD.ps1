@@ -286,10 +286,10 @@ Clear-Host
 Write-Host -ForegroundColor Green "OOBE update phase ready, Restarting in 30 seconds!"
 
 Start-Sleep -Seconds 30
-Remove-Item C:\Drivers -Force -Recurse
-Remove-Item C:\Intel -Force -Recurse
-Remove-Item C:\OSDCloud -Force -Recurse
-Remove-Item C:\Windows\Setup\Scripts\*.* -Force
+Remove-Item C:\Drivers -Force -Recurse | Out-Null
+Remove-Item C:\Intel -Force -Recurse | Out-Null
+Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
+Remove-Item C:\Windows\Setup\Scripts\*.* -Force | Out-Null
 Restart-Computer -Force
 '@
 $OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding ascii -Force
