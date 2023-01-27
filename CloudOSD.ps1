@@ -7,6 +7,18 @@
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
+$env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
+$env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
+$Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
+$env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+Write-Host -ForegroundColor Green "Install PSADT Module"
+Install-Module -Name PSADT -Force | Out-Null
+If ((Test-Battery -PassThru).IsUsingACPower -ne "True") {
+    Write-Host -ForegroundColor Red "Please insert AC Power, installation might fail if on battery"
+    Start-Sleep -Seconds 60
+}
 Start-Sleep -Seconds 5
 
 #================================================
@@ -57,8 +69,8 @@ start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scri
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 # Download and Install .Net Framework 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net.ps1
-# BIOS Check
-#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
+# Check IF VM
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
@@ -73,6 +85,8 @@ $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding
 $OOBEpsTasks = @'
 $Title = "OOBE PowerShell 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host "PowerShell 7 Download and install" -ForegroundColor Green
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-PowerShell.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
@@ -92,14 +106,19 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding as
 $OOBEnetTasks = @'
 $Title = "OOBE Add WiFi SSID's to the system if exist"
 $host.UI.RawUI.WindowTitle = $Title
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host "Searching for saved WifI networks" -ForegroundColor Green
 $XmlDirectory = "C:\Windows\Setup\Scripts"
 $XMLExist = Get-ChildItem -Path $XmlDirectory -Filter '*.xml' -File
 If (![String]::IsNullOrEmpty($XMLExist)) {
     Start-Service -Name "WlanSvc"
     Get-ChildItem $XmlDirectory | Where-Object {$_.extension -eq ".xml"} | ForEach-Object {
-        netsh wlan add profile filename=($XmlDirectory+"\"+$_.name)
         write-host "Importing WifI network: $_.name" -ForegroundColor Green
+        netsh wlan add profile filename=($XmlDirectory+"\"+$_.name)
+    }
+    Else {
+    write-host "No WiFi profiles found to import" -ForegroundColor Yellow
     }
 }
 Start-Sleep -Seconds 10
@@ -113,6 +132,8 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encoding
 $OOBEnetTasks = @'
 $Title = "OOBE .Net Framework 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host ".Net Framework 7 Download and install" -ForegroundColor Green
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Framework.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
@@ -132,6 +153,8 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding 
 $OOBEnetTasks = @'
 $Title = "Check Bios settings"
 $host.UI.RawUI.WindowTitle = $Title
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
@@ -157,6 +180,8 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding
 $OOBEPS1Tasks = @'
 $Title = "OOBE installation/update phase"
 $host.UI.RawUI.WindowTitle = $Title
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
