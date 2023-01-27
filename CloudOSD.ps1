@@ -23,8 +23,8 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Write-Host -ForegroundColor Green "Install Modules"
-Install-Module -Name PowerShellGet > $null
-Install-Module -Name PSADT -Force > $null
+Install-Module -Name PowerShellGet | Out-Null
+Install-Module -Name PSADT -Force 6>&5
 If ((Test-Battery -PassThru).IsUsingACPower -ne "True") {
     Write-Host -ForegroundColor Red "Please insert AC Power, installation might fail if on battery"
     Start-Sleep -Seconds 60
