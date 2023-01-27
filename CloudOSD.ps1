@@ -7,16 +7,22 @@
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
-# Change the ErrorActionPreference to 'SilentlyContinue'
+
+#================================================
+#   Change the ErrorActionPreference
+#   to 'SilentlyContinue' Or 'Continue'
+#================================================
 $ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
+#$ErrorActionPreference = 'Continue'
+
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Write-Host -ForegroundColor Green "Install PSADT Module"
-$ProgressPreference = "SilentlyContinue"
+Write-Host -ForegroundColor Green "Install Modules"
 Install-Module -Name PowerShellGet | Out-Null
 Install-Module -Name PSADT -Force | Out-Null
 If ((Test-Battery -PassThru).IsUsingACPower -ne "True") {
@@ -24,13 +30,6 @@ If ((Test-Battery -PassThru).IsUsingACPower -ne "True") {
     Start-Sleep -Seconds 60
 }
 Start-Sleep -Seconds 5
-
-#================================================
-#   Change the ErrorActionPreference
-#   to 'SilentlyContinue' Or 'Continue'
-#================================================
-$ErrorActionPreference = 'SilentlyContinue'
-#$ErrorActionPreference = 'Continue'
 
 #================================================
 #   [OS] Start-OSDCloud with Params
