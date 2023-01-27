@@ -7,6 +7,8 @@
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
+# Change the ErrorActionPreference to 'SilentlyContinue'
+$ErrorActionPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
@@ -14,6 +16,8 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Write-Host -ForegroundColor Green "Install PSADT Module"
+$ProgressPreference = "SilentlyContinue"
+Install-Module -Name PowerShellGet | Out-Null
 Install-Module -Name PSADT -Force | Out-Null
 If ((Test-Battery -PassThru).IsUsingACPower -ne "True") {
     Write-Host -ForegroundColor Red "Please insert AC Power, installation might fail if on battery"
