@@ -101,7 +101,7 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-Module -Name PowerShellGet -Force | Out-Null
+#Install-Module -Name PowerShellGet -Force | Out-Null
 iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
@@ -169,7 +169,7 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-Module -Name PowerShellGet -Force | Out-Null
+#Install-Module -Name PowerShellGet -Force | Out-Null
 iex "& { $(irm https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
@@ -189,7 +189,7 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-Module -Name PowerShellGet -Force | Out-Null
+#Install-Module -Name PowerShellGet -Force | Out-Null
 If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     write-host "Checking latest VMware tools" -ForegroundColor Green
     $vmwareTools = "https://packages.vmware.com/tools/esx/latest/windows/x64/index.html"
@@ -220,10 +220,10 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding as
 $OOBEnetTasks = @'
 $Title = "Check Bios settings"
 $host.UI.RawUI.WindowTitle = $Title
-$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-HPRevovery.log"
-$null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
+$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-bios.log"
+$null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
