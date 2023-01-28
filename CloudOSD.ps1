@@ -55,6 +55,7 @@ if ($null -ne $wifilist -and $wifilist -like 'Profiles on interface Wi-Fi*') {
         }
     }
     Else {
+    	Write-Host -ForegroundColor Yellow "No WiFi networks to import!"
         Write-Host -ForegroundColor Yellow $wifilist
     }
 
