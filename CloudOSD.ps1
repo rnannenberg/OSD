@@ -236,7 +236,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
     write-host "HP Bios settings check revovery settings" -ForegroundColor Green
     If ((Get-HPSecurePlatformState).State -eq "Provisioned") {
-        If ((Get-HPSureRecoverState -All).Agent -eq "@{Url=http://ftp.hp.com/pub/pcbios/CPR; Username=; ProvisioningVersion=0}" {
+        If ((Get-HPSureRecoverState -All).Agent -eq "@{Url=http://ftp.hp.com/pub/pcbios/CPR; Username=; ProvisioningVersion=0}") {
             Set-HPSecurePlatformPayload -Payload $SPEndorsementKeyPP
             Set-HPSecurePlatformPayload -Payload $SPSigningKeyPP
             Set-HPSecurePlatformPayload -Payload $AgentPayload  
