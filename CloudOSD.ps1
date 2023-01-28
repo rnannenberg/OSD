@@ -100,7 +100,8 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-#Install-Module -Name PowerShellGet -Force | Out-Null
+Write-Host "Install PowerShellGet Module" -ForegroundColor Green
+Install-Module -Name PowerShellGet -Force | Out-Null
 iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
@@ -168,7 +169,8 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-#Install-Module -Name PowerShellGet -Force | Out-Null
+Write-Host "Install PowerShellGet Module" -ForegroundColor Green
+Install-Module -Name PowerShellGet -Force | Out-Null
 iex "& { $(irm https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
@@ -188,7 +190,6 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-#Install-Module -Name PowerShellGet -Force | Out-Null
 If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     write-host "Checking latest VMware tools" -ForegroundColor Green
     $vmwareTools = "https://packages.vmware.com/tools/esx/latest/windows/x64/index.html"
@@ -233,9 +234,10 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     $AgentPayload = "{"timestamp":"\/Date(1674900773165)\/","purpose":"hp:surerecover:provision:recovery_image","Data":[66,30,141,115,117,153,248,136,207,52,70,81,15,254,218,138,62,38,9,64,56,187,95,192,214,75,237,234,154,127,85,243,37,96,49,220,161,122,220,41,206,189,125,45,216,23,113,6,240,6,97,67,73,218,113,167,231,175,189,141,242,209,146,135,138,178,116,203,205,183,113,130,133,252,210,47,122,178,187,33,166,234,172,42,36,224,73,44,237,6,221,138,35,153,4,50,197,204,188,51,92,35,78,207,33,1,103,160,255,122,125,27,157,141,50,182,8,228,154,213,63,60,82,42,127,4,46,98,12,60,174,124,22,254,168,149,82,47,135,17,248,50,6,107,243,217,3,147,188,76,93,61,114,183,165,199,152,217,67,153,213,69,131,130,55,154,35,123,198,120,232,131,76,210,74,155,210,18,205,67,208,10,190,208,138,173,211,10,41,90,171,225,92,43,209,121,134,35,164,237,219,125,81,193,222,180,224,84,237,6,169,225,250,63,3,54,180,212,161,72,77,18,195,29,192,9,96,152,36,244,126,225,169,16,159,69,124,17,198,67,55,114,195,47,90,218,226,179,50,74,5,171,221,43,246,4,36,245,212,99,1,0,139,149,128,98,164,239,109,68,253,226,197,228,58,215,69,72,236,150,216,97,211,126,50,247,19,15,123,130,197,201,44,183,168,205,70,29,61,180,79,108,49,103,33,69,105,166,5,93,66,215,114,85,5,26,129,61,164,153,164,12,196,32,207,137,102,173,118,18,146,211,143,16,75,105,200,34,79,231,196,211,205,102,212,129,247,125,217,59,188,40,166,163,28,140,190,172,165,161,150,219,160,140,235,2,46,193,110,78,188,240,107,65,223,157,1,25,57,145,218,154,54,79,247,132,212,139,215,118,5,155,186,39,187,207,255,185,93,213,69,108,214,98,8,253,77,171,211,241,222,108,35,22,56,105,48,29,24,202,3,99,36,245,177,1,44,3,45,117,22,4,138,212,47,230,158,15,124,185,54,168,87,100,12,147,60,102,32,113,197,18,126,4,5,186,208,203,205,44,205,42,111,1,170,203,16,213,160,88,147,242,32,60,71,108,151,27,138,106,155,215,166,237,131,238,145,44,40,175,217,170,240,179,93,29,225,49,135,32,101,98,113,83,233,81,60,189,207,76,26,45,241,37,209,142,211,194,0,0,104,116,116,112,115,58,47,47,115,116,97,119,115,100,101,112,108,111,121,48,48,49,46,98,108,111,98,46,99,111,114,101,46,119,105,110,100,111,119,115,46,110,101,116,47,111,115,100],"Meta1":null,"Meta2":null,"Meta3":null,"Meta4":null}"
     Write-Host -ForegroundColor Green "Install HPCMSL Module"
     Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
-    write-host "HP Bios settings check revovery settings" -ForegroundColor Green
+    write-host "HP Bios settings check recovery settings" -ForegroundColor Green
     If ((Get-HPSecurePlatformState).State -eq "Provisioned") {
         If ((Get-HPSureRecoverState -All).Agent -eq "@{Url=http://ftp.hp.com/pub/pcbios/CPR; Username=; ProvisioningVersion=0}") {
+            write-host "HP Send payload to BIOS" -ForegroundColor Green
             Set-HPSecurePlatformPayload -Payload $SPEndorsementKeyPP
             Set-HPSecurePlatformPayload -Payload $SPSigningKeyPP
             Set-HPSecurePlatformPayload -Payload $AgentPayload  
