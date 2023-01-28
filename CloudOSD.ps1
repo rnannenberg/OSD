@@ -97,7 +97,7 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-Module -Name PowerShellGet | Out-Null
+Install-Module -Name PowerShellGet -Force | Out-Null
 iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
@@ -118,6 +118,7 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+Install-Module -Name PowerShellGet -Force | Out-Null
 Install-Module -Name VcRedist -Force | Out-Null
 iex "& { $(irm https://vcredist.com/install.ps1) }" | Out-Null
 '@
@@ -165,7 +166,8 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-Module -Name PowerShellGet | Out-Null
+Install-PackageProvider -Name NuGet -Force | Out-Null
+Install-Module -Name PowerShellGet -Force | Out-Null
 iex "& { $(irm https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
@@ -185,6 +187,8 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+Install-PackageProvider -Name NuGet -Force | Out-Null
+Install-Module -Name PowerShellGet -Force | Out-Null
 If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     write-host "Checking latest VMware tools" -ForegroundColor Green
     $vmwareTools = "https://packages.vmware.com/tools/esx/latest/windows/x64/index.html"
@@ -221,6 +225,8 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+Install-PackageProvider -Name NuGet -Force | Out-Null
+Install-Module -Name PowerShellGet -Force | Out-Null
 If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-HPRevovery.log"
     $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
@@ -268,6 +274,7 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 # Register Powershell Modules and install tools
 Write-Host "Register PSGallery" -ForegroundColor Green
 Register-PSRepository -Default | Out-Null
+Install-PackageProvider -Name NuGet -Force | Out-Null
 Write-Host "Install PackageManagement Module" -ForegroundColor Green
 Install-Module -Name PackageManagement -Force | Out-Null
 Write-Host "Install PowerShellGet Module" -ForegroundColor Green
