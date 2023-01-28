@@ -32,7 +32,7 @@ Start-Sleep -Seconds 5
 #================================================
 #   [OS] Start-OSDCloud with Params
 #================================================
-#Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise -OSLanguage en-us -OSLicense Volume
+Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise -OSLanguage en-us -OSLicense Volume
 
 #================================================
 #   [OS] Check WiFi and export profile
@@ -396,4 +396,4 @@ If(!(test-path $Tagpath))
 #================================================
 Write-Host -ForegroundColor Green "Restarting in 10 seconds!"
 Start-Sleep -Seconds 10
-#wpeutil reboot
+wpeutil reboot
