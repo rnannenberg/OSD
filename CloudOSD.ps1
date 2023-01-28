@@ -35,7 +35,7 @@ Start-Sleep -Seconds 5
 Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise -OSLanguage en-us -OSLicense Volume
 
 #================================================
-#   [OS] Check WiFi and export profile
+#   [OS] Check for WinPE WiFi and export profiles
 #================================================ 
 $XmlDirectory = "C:\Windows\Setup\Scripts"
 $wifilist = $(netsh.exe wlan show profiles)
