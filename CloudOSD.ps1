@@ -250,7 +250,10 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
         Set-HPSecurePlatformPayload -Payload $SPSigningKeyPP
         Set-HPSecurePlatformPayload -Payload $AgentPayload  
     }
+    Write-Host "HP BIOS, no actions necessary" -ForegroundColor Green
+    Start-Sleep -Seconds 10
 }
+
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding ascii -Force
 
