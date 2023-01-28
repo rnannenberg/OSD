@@ -250,8 +250,6 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
         Set-HPSecurePlatformPayload -Payload $AgentPayload  
     }
 }
-Get-HPSureRecoverState -All
-Start-Sleep -Seconds 120
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding ascii -Force
 
