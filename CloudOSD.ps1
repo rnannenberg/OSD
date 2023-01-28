@@ -220,6 +220,8 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding as
 $OOBEnetTasks = @'
 $Title = "Check Bios settings"
 $host.UI.RawUI.WindowTitle = $Title
+$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-HPRevovery.log"
+$null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
@@ -229,17 +231,15 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Register-PSRepository -Default | Out-Null
 Install-Module -Name PowerShellGet -Force | Out-Null
 If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
-    $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-HPRevovery.log"
-    $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
     Write-Host -ForegroundColor Green "Install HPCMSL Module"
-    Install-Module -Name HPCMSL -Force -AcceptLicens
-    Start-Sleep -Seconds 10
+    Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
     write-host "HP Bios settings check revovery settings" -ForegroundColor Green
     If ((Get-HPSecurePlatformState).State -eq "Provisioned") {
         Get-HPSureRecoverState -All
         Start-Sleep -Seconds 30
     }
 }
+Start-Sleep -Seconds 30
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding ascii -Force
 
@@ -284,8 +284,6 @@ Write-Host -ForegroundColor Green "Install OSD Module"
 Install-Module OSD -Force | Out-Null
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
-Write-Host -ForegroundColor Green "Install HPCMSL Module"
-Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
 Start-Sleep -Seconds 5
 
 Clear-Host
