@@ -239,9 +239,9 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
             write-host "HP Send recovery payload to BIOS" -ForegroundColor Green
             Set-HPSecurePlatformPayload -Payload $AgentPayload  
         }
-	Else {
-	    Write-Host = "HP Recovery location already set"
-	}
+	    Else {
+	        Write-Host = "HP Recovery location already set"
+	    }
     }
     Else {
     	Write-Host "HP Send Provisioning, signing and recovery payload to BIOS" -ForegroundColor Green
@@ -250,7 +250,6 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
         Set-HPSecurePlatformPayload -Payload $AgentPayload  
     }
 }
-
 Get-HPSureRecoverState -All
 Start-Sleep -Seconds 120
 '@
