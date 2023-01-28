@@ -233,16 +233,19 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     $AgentPayload = '{"timestamp":"\/Date(1674912543980)\/","purpose":"hp:surerecover:provision:recovery_image","Data":[137,77,205,170,37,39,147,203,149,191,64,221,122,162,23,138,53,181,90,156,175,22,48,10,154,103,148,25,213,243,182,197,245,136,230,197,224,175,142,232,40,201,192,25,95,201,179,49,15,96,26,236,197,252,10,157,232,209,226,162,37,106,185,215,167,52,53,104,36,66,0,152,11,130,5,22,168,153,117,122,119,54,77,167,180,71,177,128,49,73,251,20,2,6,91,164,83,4,19,45,12,49,12,152,88,40,49,129,178,15,63,92,148,83,106,204,150,85,73,22,170,231,243,5,118,72,205,227,0,32,43,53,194,50,61,203,211,192,144,136,92,235,4,6,101,140,180,127,96,129,151,235,255,120,173,104,69,225,20,228,42,218,179,148,115,13,191,251,60,30,72,31,74,3,255,160,197,125,131,31,163,209,222,161,96,98,48,103,21,4,204,52,195,246,234,66,177,76,244,36,238,179,80,79,153,47,9,79,130,27,113,175,251,225,1,119,56,142,197,149,214,64,84,69,115,241,149,120,46,109,180,216,46,141,180,176,72,166,233,58,240,151,171,64,222,83,104,13,197,77,212,214,145,228,192,154,31,35,213,99,1,0,139,149,128,98,164,239,109,68,253,226,197,228,58,215,69,72,236,150,216,97,211,126,50,247,19,15,123,130,197,201,44,183,168,205,70,29,61,180,79,108,49,103,33,69,105,166,5,93,66,215,114,85,5,26,129,61,164,153,164,12,196,32,207,137,102,173,118,18,146,211,143,16,75,105,200,34,79,231,196,211,205,102,212,129,247,125,217,59,188,40,166,163,28,140,190,172,165,161,150,219,160,140,235,2,46,193,110,78,188,240,107,65,223,157,1,25,57,145,218,154,54,79,247,132,212,139,215,118,5,155,186,39,187,207,255,185,93,213,69,108,214,98,8,253,77,171,211,241,222,108,35,22,56,105,48,29,24,202,3,99,36,245,177,1,44,3,45,117,22,4,138,212,47,230,158,15,124,185,54,168,87,100,12,147,60,102,32,113,197,18,126,4,5,186,208,203,205,44,205,42,111,1,170,203,16,213,160,88,147,242,32,60,71,108,151,27,138,106,155,215,166,237,131,238,145,44,40,175,217,170,240,179,93,29,225,49,135,32,101,98,113,83,233,81,60,189,207,76,26,45,241,37,209,142,211,194,0,0,104,116,116,112,115,58,47,47,115,116,97,119,115,100,101,112,108,111,121,48,48,49,46,98,108,111,98,46,99,111,114,101,46,119,105,110,100,111,119,115,46,110,101,116,47,111,115,100],"Meta1":null,"Meta2":null,"Meta3":null,"Meta4":null}'
     Write-Host -ForegroundColor Green "Install HPCMSL Module"
     Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
-    write-host "HP Bios settings check recovery settings" -ForegroundColor Green
+    Write-Host "HP Bios settings check recovery settings" -ForegroundColor Green
     If ((Get-HPSecurePlatformState).State -eq "Provisioned") {
         If (((Get-HPSureRecoverState -All).Agent).url -eq "http://ftp.hp.com/pub/pcbios/CPR") {
             write-host "HP Send recovery payload to BIOS" -ForegroundColor Green
             Set-HPSecurePlatformPayload -Payload $AgentPayload  
         }
+	Else {
+	    Write-Host = "HP Recovery location already set"
+	}
     }
     Else {
-	    write-host "HP Send Provisioning, signing and recovery payload to BIOS" -ForegroundColor Green
-	    Set-HPSecurePlatformPayload -Payload $SPEndorsementKeyPP
+    	Write-Host "HP Send Provisioning, signing and recovery payload to BIOS" -ForegroundColor Green
+	Set-HPSecurePlatformPayload -Payload $SPEndorsementKeyPP
         Set-HPSecurePlatformPayload -Payload $SPSigningKeyPP
         Set-HPSecurePlatformPayload -Payload $AgentPayload  
     }
