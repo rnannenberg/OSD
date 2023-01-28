@@ -39,6 +39,8 @@ Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise 
 #================================================ 
 $XmlDirectory = "C:\Windows\Setup\Scripts"
 $wifilist = $(netsh.exe wlan show profiles)
+Install-Module -Name PowerShellGet -Force | Out-Null
+Install-Module -Name VcRedist -Force | Out-Null
 if ($null -ne $wifilist -and $wifilist -like 'Profiles on interface Wi-Fi*') {
     $ListOfSSID = ($wifilist | Select-string -pattern "\w*All User Profile.*: (.*)" -allmatches).Matches | ForEach-Object {$_.Groups[1].Value}
     $NumberOfWifi = $ListOfSSID.count
@@ -74,6 +76,8 @@ start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scri
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VcRedist.ps1
 # Check IF VM and install things
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM.ps1
+# Check IF HP and install things en change the HP Recovery
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
@@ -118,7 +122,6 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-Module -Name PowerShellGet -Force | Out-Null
 Install-Module -Name VcRedist -Force | Out-Null
 iex "& { $(irm https://vcredist.com/install.ps1) }" | Out-Null
 '@
@@ -166,7 +169,6 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-PackageProvider -Name NuGet -Force | Out-Null
 Install-Module -Name PowerShellGet -Force | Out-Null
 iex "& { $(irm https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
 '@
@@ -187,7 +189,6 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-PackageProvider -Name NuGet -Force | Out-Null
 Install-Module -Name PowerShellGet -Force | Out-Null
 If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     write-host "Checking latest VMware tools" -ForegroundColor Green
@@ -225,7 +226,7 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-Install-PackageProvider -Name NuGet -Force | Out-Null
+Register-PSRepository -Default | Out-Null
 Install-Module -Name PowerShellGet -Force | Out-Null
 If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-HPRevovery.log"
@@ -235,7 +236,8 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     Start-Sleep -Seconds 10
     write-host "HP Bios settings check revovery settings" -ForegroundColor Green
     If ((Get-HPSecurePlatformState).State -eq "Provisioned") {
-    
+        Get-HPSureRecoverState -All
+        Start-Sleep -Seconds 30
     }
 }
 '@
@@ -274,7 +276,6 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 # Register Powershell Modules and install tools
 Write-Host "Register PSGallery" -ForegroundColor Green
 Register-PSRepository -Default | Out-Null
-Install-PackageProvider -Name NuGet -Force | Out-Null
 Write-Host "Install PackageManagement Module" -ForegroundColor Green
 Install-Module -Name PackageManagement -Force | Out-Null
 Write-Host "Install PowerShellGet Module" -ForegroundColor Green
