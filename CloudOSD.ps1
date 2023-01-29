@@ -27,8 +27,6 @@ If (([Windows.Forms.SystemInformation]::PowerStatus).PowerLineStatus -ne "Online
     Start-Sleep -Seconds 60
 }
 
-Start-Sleep -Seconds 5
-
 #================================================
 #   [OS] Start-OSDCloud with Params
 #================================================
@@ -55,7 +53,7 @@ if ($null -ne $wifilist -and $wifilist -like 'Profiles on interface Wi-Fi*') {
         }
     }
     Else {
-    	Write-Host -ForegroundColor Yellow "No WiFi networks to import!"
+    	Write-Host -ForegroundColor Yellow "No WiFi networks to export, please keep machine connected to a network cable during installation."
         Write-Host -ForegroundColor Yellow $wifilist
     }
 
@@ -362,7 +360,7 @@ ForEach($app in $appname){
 Start-Sleep -Seconds 10
 
 Clear-Host 
-Write-Host -ForegroundColor Green "Install .Net Framework 3.x"
+Write-Host -ForegroundColor Green "Install .Net Framework"
 $Result = Get-MyWindowsCapability -Match 'NetFX' -Detail
 foreach ($Item in $Result) {
     if ($Item.State -eq 'Installed') {
@@ -395,9 +393,9 @@ if ($UpdateWindows) {
 Start-Sleep -Seconds 10
 
 Clear-Host
-Write-Host -ForegroundColor Green "OOBE update phase ready, Restarting in 30 seconds!"
-
+Write-Host -ForegroundColor Green "OOBE update phase ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
+
 Remove-Item C:\Drivers -Force -Recurse | Out-Null
 Remove-Item C:\Intel -Force -Recurse | Out-Null
 Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
@@ -407,7 +405,8 @@ Restart-Computer -Force
 $OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding ascii -Force
 
 #================================================
-#   [OOBE] Disable Shift F10
+#   Disable Shift F10 in OOBE
+#   for security Reasons
 #================================================
 $Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
 If(!(test-path $Tagpath))
