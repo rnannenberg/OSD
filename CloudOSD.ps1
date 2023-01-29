@@ -68,6 +68,9 @@ $OOBEcmdTasks = @'
 @echo off
 # Import WiFi XML's if they exist
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\wifi.ps1
+Start-Sleep -Seconds 10
+# Check and change the Recovery settings
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Download and Install PowerShell 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 # Download and Install .Net Framework 7
