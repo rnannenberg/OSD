@@ -247,14 +247,14 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
 	    }
     }
     Else {
-    	Write-Host "HP Send Provisioning, signing and recovery payload to BIOS" -ForegroundColor Green
+    	Write-Host "Sending provisioning, signing and recovery agent url payload to BIOS" -ForegroundColor Green
 	Write-host "Provisioning Endorsement Key"
 	Set-HPSecurePlatformPayload -Payload $SPEndorsementKeyPP
 	Start-Sleep -Seconds 5
-	Write-host "Provisioning signing key"
+	Write-host "Provisioning Signing Key"
         Set-HPSecurePlatformPayload -Payload $SPSigningKeyPP
 	Start-Sleep -Seconds 5
-	Write-host "Provisioning Agent Payload for recovery"
+	Write-host "Provisioning Agent Payload for recovery url"
         Set-HPSecurePlatformPayload -Payload $AgentPayload  
     }
     Start-Sleep -Seconds 5
