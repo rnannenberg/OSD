@@ -27,6 +27,7 @@ If (([Windows.Forms.SystemInformation]::PowerStatus).PowerLineStatus -ne "Online
     Start-Sleep -Seconds 60
 }
 
+Start-Sleep -Seconds 10
 #================================================
 #   [OS] Start-OSDCloud with Params
 #================================================
@@ -134,6 +135,7 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encod
 #================================================
 $OOBEnetTasks = @'
 $Title = "OOBE Add WiFi SSID's to the system if exist"
+$Title = "OOBE Add WiFi SSID's to the system if exist"
 $host.UI.RawUI.WindowTitle = $Title
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
@@ -145,11 +147,11 @@ If (![String]::IsNullOrEmpty($XMLExist)) {
     Get-ChildItem $XmlDirectory | Where-Object {$_.extension -eq ".xml"} | ForEach-Object {
         write-host "Importing WifI network: $_.name" -ForegroundColor Green
         netsh wlan add profile filename=($XmlDirectory+"\"+$_.name)
-    }
-    Else {
-    write-host "No WiFi profiles found to import" -ForegroundColor Yellow
-    }
+    }   
 }
+    Else {
+        write-host "No WiFi profiles found to import" -ForegroundColor Yellow
+    }
 Start-Sleep -Seconds 10
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encoding ascii -Force
