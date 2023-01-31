@@ -3,6 +3,7 @@
 #   Windows 11 22H2 Enterprise us Volume
 #   No Autopilot
 #   No Office Deployment Tool
+#   Version 1.0
 #================================================
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
@@ -94,6 +95,8 @@ $OOBEcmdTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding
 $OOBEpsTasks = @'
 $Title = "OOBE PowerShell 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host "PowerShell 7 Download and install" -ForegroundColor Green
@@ -116,6 +119,8 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding as
 $OOBEpsTasks = @'
 $Title = "OOBE VcRedist Download and install supported versions"
 $host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host "VcRedist Download and install supported versions" -ForegroundColor Green
@@ -138,6 +143,8 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encod
 $OOBEnetTasks = @'
 $Title = "OOBE Add WiFi SSID's to the system if exist"
 $host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host "Searching for saved WifI networks" -ForegroundColor Green
@@ -164,6 +171,8 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encoding
 $OOBEnetTasks = @'
 $Title = "OOBE .Net Framework 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host ".Net Framework 7 Download and install" -ForegroundColor Green
@@ -185,6 +194,8 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding 
 $OOBEpsTasks = @'
 $Title = "Check if machine is a VM"
 $host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-VM.log"
@@ -227,6 +238,8 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding as
 $OOBEnetTasks = @'
 $Title = "Check Bios settings"
 $host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-bios.log"
@@ -274,6 +287,8 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding
 $OOBEPS1Tasks = @'
 $Title = "OOBE installation/update phase"
 $host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
