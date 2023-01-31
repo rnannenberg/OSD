@@ -24,6 +24,7 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 If (([Windows.Forms.SystemInformation]::PowerStatus).PowerLineStatus -ne "Online") {
     Write-Host -ForegroundColor Red "Please insert AC Power, installation might fail if on battery"
+    Write-Host -ForegroundColor Red "Installation will continue in 60 seconds!"
     Start-Sleep -Seconds 60
 }
 
@@ -39,12 +40,13 @@ Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise 
 $XmlDirectory = "C:\Windows\Setup\Scripts"
 $wifilist = $(netsh.exe wlan show profiles)
 Install-Module -Name VcRedist -Force | Out-Null
+write-host "Searching for WiFi Networks configured during WinRE phase" -ForegroundColor Green
 if ($null -ne $wifilist -and $wifilist -like 'Profiles on interface Wi-Fi*') {
     $ListOfSSID = ($wifilist | Select-string -pattern "\w*All User Profile.*: (.*)" -allmatches).Matches | ForEach-Object {$_.Groups[1].Value}
     $NumberOfWifi = $ListOfSSID.count
     foreach ($SSID in $ListOfSSID){
         try {
-            Write-Host -ForegroundColor green "Exporting WiFi SSID:$SSID"
+            Write-Host "Exporting WiFi SSID:$SSID"
             $XML = $(netsh.exe wlan export profile name=`"$SSID`" key=clear folder=`"$XmlDirectory`")
             }
             catch [System.Exception] {
@@ -54,7 +56,7 @@ if ($null -ne $wifilist -and $wifilist -like 'Profiles on interface Wi-Fi*') {
         }
     }
     Else {
-    	Write-Host -ForegroundColor Yellow "No WiFi networks to export, please keep machine connected to a network cable during installation."
+    	Write-Host -ForegroundColor Yellow "No WiFi networks to export, please keep machine connected to a networkcable during installation."
         Write-Host -ForegroundColor Yellow $wifilist
     }
 
@@ -135,7 +137,6 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encod
 #================================================
 $OOBEnetTasks = @'
 $Title = "OOBE Add WiFi SSID's to the system if exist"
-$Title = "OOBE Add WiFi SSID's to the system if exist"
 $host.UI.RawUI.WindowTitle = $Title
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
@@ -143,7 +144,7 @@ write-host "Searching for saved WifI networks" -ForegroundColor Green
 $XmlDirectory = "C:\Windows\Setup\Scripts"
 $XMLExist = Get-ChildItem -Path $XmlDirectory -Filter '*.xml' -File
 If (![String]::IsNullOrEmpty($XMLExist)) {
-    Start-Service -Name "WlanSvc"
+    Start-Service -Name "WlanSvc" | Out-Null
     Get-ChildItem $XmlDirectory | Where-Object {$_.extension -eq ".xml"} | ForEach-Object {
         write-host "Importing WifI network: $_.name" -ForegroundColor Green
         netsh wlan add profile filename=($XmlDirectory+"\"+$_.name)
@@ -212,6 +213,10 @@ If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     $params = "/S /v /qn REBOOT=R ADDLOCAL=ALL"
     Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
 }
+    Else {
+        write-host "Machine is not not a virtual machine" -ForegroundColor Yellow
+    }
+Start-Sleep -Seconds 10
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding ascii -Force
 
