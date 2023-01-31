@@ -239,7 +239,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     Write-Host "HP Bios settings check recovery settings" -ForegroundColor Green
     If ((Get-HPSecurePlatformState).State -eq "Provisioned") {
         If (((Get-HPSureRecoverState -All).Agent).url -ne "http://stawsdeploy001.blob.core.windows.net/osd") {
-            write-host "HP Send recovery payload to BIOS" -ForegroundColor Green
+            Write-host "Provisioning Agent Payload for recovery url"
             Set-HPSecurePlatformPayload -Payload $AgentPayload  
         }
 	    Else {
