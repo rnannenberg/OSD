@@ -156,7 +156,12 @@ If (![String]::IsNullOrEmpty($XMLExist)) {
     Get-ChildItem $XmlDirectory | Where-Object {$_.extension -eq ".xml"} | ForEach-Object {
         write-host "Importing WifI network: $_.name" -ForegroundColor Green
         netsh wlan add profile filename=($XmlDirectory+"\"+$_.name)
-    }   
+    }
+    while ((((Get-CimInstance -ClassName Win32_NetworkAdapter | Where-Object {($_.NetConnectionID -eq 'Wi-Fi') -or ($_.NetConnectionID -eq 'WiFi') -or ($_.NetConnectionID -eq 'WLAN')}).NetEnabled) -eq $false) -and $i -gt 0) {
+        --$i
+        Write-Host -ForegroundColor DarkGray "Waiting for Wi-Fi Connection ($i)"
+        Start-Sleep -Seconds 1
+    }
 }
     Else {
         write-host "No WiFi profiles found to import" -ForegroundColor Yellow
