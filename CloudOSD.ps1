@@ -456,8 +456,8 @@ title    = "$pc"
 text   = " "
 sections = @(
    @{
-     activityTitle    = 'OS Cloud Deployment/Recovery Windows 11'
-     activitySubtitle = 'Ron'
+     activityTitle    = 'OS Cloud Deployment Windows 11'
+     activitySubtitle = 'OSD'
    },
    @{
      title = '<h2 style=color:blue;>Deployment Details'
