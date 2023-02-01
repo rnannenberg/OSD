@@ -169,7 +169,7 @@ If (![String]::IsNullOrEmpty($XMLExist)) {
     Else {
         write-host "No WiFi profiles found to import" -ForegroundColor Yellow
     }
-
+Start-Sleep -Seconds 10
 #=================================================
 #	Test Internet Connection
 #=================================================
