@@ -397,23 +397,23 @@ Clear-Host
 #Install Driver updates
 $ProgressPreference = 'Continue'
 Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
-$UpdateDrivers = $true
-if ($UpdateDrivers) {
-    Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
-    Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-DriversUpdate.log" -force
-}
-Start-Sleep -Seconds 10
+$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Drivers.log"
+Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
+$driverupdates = Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot
+$resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders | Out-String
+write-host $resultdriverupdates
+Start-Sleep -Seconds 30
 
 Clear-Host
 #Install Software updates
 Write-Host -ForegroundColor Green "Install Windows Updates"
-$UpdateWindows = $true
-if ($UpdateWindows) {
-    Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
-    Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-WindowsUpdate.log" -force
-}
+$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Updates.log"
+Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
+$softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot
+$resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders | Out-String
+write-host $resultsoftwareupdates
 $ProgressPreference = 'SilentlyContinue'
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 30
 
 Clear-Host
 Write-Host -ForegroundColor Green "OOBE update phase ready, cleanup and the restarting in 30 seconds!"
@@ -427,12 +427,12 @@ Remove-Item C:\Windows\Setup\Scripts\*.* -Force | Out-Null
 #   Disable Shift F10 in OOBE after installatie
 #   for security Reasons after recovery
 #================================================
-$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
-If(!(test-path $Tagpath))
-    {
-      New-Item -ItemType file -Force -Path $Tagpath | Out-Null
-      Write-Host -ForegroundColor green "OOBE Shift F10 disabled!"
-}
+#$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
+#If(!(test-path $Tagpath))
+#    {
+#      New-Item -ItemType file -Force -Path $Tagpath | Out-Null
+#      Write-Host -ForegroundColor green "OOBE Shift F10 disabled!"
+#}
 Restart-Computer -Force
 '@
 $OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding ascii -Force
