@@ -287,17 +287,15 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding
 $OOBEPS1Tasks = @'
 $Title = "OOBE installation/update phase"
 $host.UI.RawUI.WindowTitle = $Title
-$ErrorActionPreference = 'SilentlyContinue'
-$ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
 
-# Change the ErrorActionPreference to 'SilentlyContinue'
-#$ErrorActionPreference = 'SilentlyContinue'
-$ErrorActionPreference = 'Continue'
+# Change the ActionPreferences
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = 'SilentlyContinue'
 
 # Set Environment
 Write-Host "Set Environment" -ForegroundColor Green
@@ -397,12 +395,14 @@ Start-Sleep -Seconds 10
 
 Clear-Host
 #Install Driver updates
+$ProgressPreference = 'Continue'
 Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
 $UpdateDrivers = $true
 if ($UpdateDrivers) {
     Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
     Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-DriversUpdate.log" -force
 }
+Start-Sleep -Seconds 10
 
 Clear-Host
 #Install Software updates
@@ -412,16 +412,27 @@ if ($UpdateWindows) {
     Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
     Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot | Out-File "c:\windows\temp\$(get-date -f yyyy-MM-dd)-WindowsUpdate.log" -force
 }
+$ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 10
 
 Clear-Host
 Write-Host -ForegroundColor Green "OOBE update phase ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
-
 Remove-Item C:\Drivers -Force -Recurse | Out-Null
 Remove-Item C:\Intel -Force -Recurse | Out-Null
 Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
 Remove-Item C:\Windows\Setup\Scripts\*.* -Force | Out-Null
+
+#================================================
+#   Disable Shift F10 in OOBE after installatie
+#   for security Reasons after recovery
+#================================================
+$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
+If(!(test-path $Tagpath))
+    {
+      New-Item -ItemType file -Force -Path $Tagpath | Out-Null
+      Write-Host -ForegroundColor green "OOBE Shift F10 disabled!"
+}
 Restart-Computer -Force
 '@
 $OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding ascii -Force
