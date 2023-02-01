@@ -8,7 +8,7 @@
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
-$OSDDebug = "False"
+$OSDDebug = "True"
 
 #================================================
 #   Change the ErrorActionPreference
@@ -316,7 +316,7 @@ $host.UI.RawUI.WindowTitle = $Title
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
-$OOBEDebug = "False"
+$OOBEDebug = "True"
 
 # Change the ActionPreferences
 $ErrorActionPreference = 'SilentlyContinue'
@@ -338,8 +338,8 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 # Register Powershell Modules and install tools
 Write-Host "Register PSGallery" -ForegroundColor Green
 Register-PSRepository -Default | Out-Null
-Write-Host "Install PackageManagement Module" -ForegroundColor Green
-Install-Module -Name PackageManagement -Force | Out-Null
+#Write-Host "Install PackageManagement Module" -ForegroundColor Green
+#Install-Module -Name PackageManagement -Force | Out-Null
 Write-Host "Install PowerShellGet Module" -ForegroundColor Green
 Install-Module -Name PowerShellGet -Force | Out-Null
 Write-Host -ForegroundColor Green "Install OSD Module"
@@ -425,7 +425,7 @@ Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Drivers.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $driverupdates = Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot
-$resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders -AutoSize -Wrap | Out-String
+$resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders -AutoSize | Out-String
 Start-Sleep -Seconds 10
 
 Clear-Host
@@ -434,7 +434,7 @@ Write-Host -ForegroundColor Green "Install Windows Updates"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Updates.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot
-$resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders -AutoSize -Wrap | Out-String
+$resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders -AutoSize | Out-String
 $ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 10
 
