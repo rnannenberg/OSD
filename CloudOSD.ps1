@@ -514,10 +514,13 @@ Remove-Item C:\Intel -Force -Recurse | Out-Null
 Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
 #================================================
 #   Disable Shift F10 after installation
-#   for security reasons also after recovery
+#   for security reasons, also after recovery
 #================================================
 If ($OOBEDebug -eq "False") {
    Remove-Item C:\Windows\Setup\Scripts\*.* -Exclude *.TAG -Force | Out-Null
+}
+Else {
+   Remove-Item C:\Windows\Setup\Scripts\*.* -Force | Out-Null
 }
 
 Restart-Computer -Force
@@ -533,6 +536,7 @@ If ($OSDDebug -eq "False") {
    If(!(test-path $Tagpath)) {
       New-Item -ItemType file -Force -Path $Tagpath | Out-Null
       Write-Host -ForegroundColor green "OOBE Shift F10 disabled!"
+   }
 }
 #================================================
 #   PostOS
