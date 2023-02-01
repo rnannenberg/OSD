@@ -180,7 +180,7 @@ if (Test-WebConnection -Uri 'google.com') {
 }
    else {
        	Write-Host -ForegroundColor Red "FAIL"
-        Write-Host -ForegroundColor Red "Lets reboot and try again!
+        Write-Host -ForegroundColor Red "Lets reboot and try again!"
 	Start-Sleep -Seconds 10
 	Restart-Computer -Force
    }
