@@ -169,6 +169,21 @@ If (![String]::IsNullOrEmpty($XMLExist)) {
     Else {
         write-host "No WiFi profiles found to import" -ForegroundColor Yellow
     }
+
+#=================================================
+#	Test Internet Connection
+#=================================================
+Write-Host -ForegroundColor Green "Test internet connection google.com " -NoNewline
+if (Test-WebConnection -Uri 'google.com') {
+   Write-Host -ForegroundColor Green 'OK'
+   Write-Host -ForegroundColor DarkGray "You are connected to the Internet"
+}
+   else {
+       	Write-Host -ForegroundColor Red "FAIL"
+        Write-Host -ForegroundColor Red "Lets reboot and try again!
+	Start-Sleep -Seconds 10
+	Restart-Computer -Force
+   }
 Start-Sleep -Seconds 10
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encoding ascii -Force
@@ -270,7 +285,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
             Set-HPSecurePlatformPayload -Payload $AgentPayload  
         }
 	    Else {
-	        Write-Host = "HP Recovery location already set"
+	        Write-Host "HP Recovery location already set"
 	    }
     }
     Else {
