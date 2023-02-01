@@ -8,6 +8,7 @@
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
+$OSDDebug = "False"
 
 #================================================
 #   Change the ErrorActionPreference
@@ -134,7 +135,6 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
 Install-Module -Name VcRedist -Force | Out-Null
-#iex "& { $(irm https://vcredist.com/install.ps1) }" | Out-Null
 iex ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encoding ascii -Force
@@ -316,6 +316,7 @@ $host.UI.RawUI.WindowTitle = $Title
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
+$OOBEDebug = "False"
 
 # Change the ActionPreferences
 $ErrorActionPreference = 'SilentlyContinue'
@@ -511,18 +512,14 @@ Start-Sleep -Seconds 30
 Remove-Item C:\Drivers -Force -Recurse | Out-Null
 Remove-Item C:\Intel -Force -Recurse | Out-Null
 Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
-Remove-Item C:\Windows\Setup\Scripts\*.* -Force | Out-Null
-
 #================================================
 #   Disable Shift F10 after installation
 #   for security reasons also after recovery
 #================================================
-#$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
-#If(!(test-path $Tagpath))
-#    {
-#      New-Item -ItemType file -Force -Path $Tagpath | Out-Null
-#      Write-Host -ForegroundColor green "OOBE Shift F10 disabled!"
-#}
+If ($OOBEDebug -eq "False") {
+   Remove-Item C:\Windows\Setup\Scripts\*.* -Exclude *.TAG -Force | Out-Null
+}
+
 Restart-Computer -Force
 '@
 $OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding ascii -Force
@@ -531,9 +528,9 @@ $OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding
 #   Disable Shift F10 in OOBE
 #   for security Reasons
 #================================================
-$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
-If(!(test-path $Tagpath))
-    {
+If ($OSDDebug -eq "False") {
+   $Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
+   If(!(test-path $Tagpath)) {
       New-Item -ItemType file -Force -Path $Tagpath | Out-Null
       Write-Host -ForegroundColor green "OOBE Shift F10 disabled!"
 }
