@@ -150,6 +150,7 @@ $ProgressPreference = "SilentlyContinue"
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host "Searching for saved WifI networks" -ForegroundColor Green
 $XmlDirectory = "C:\Windows\Setup\Scripts"
+$i = 30
 $XMLExist = Get-ChildItem -Path $XmlDirectory -Filter '*.xml' -File
 If (![String]::IsNullOrEmpty($XMLExist)) {
     Start-Service -Name "WlanSvc" | Out-Null
