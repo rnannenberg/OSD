@@ -514,8 +514,8 @@ Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
 Remove-Item C:\Windows\Setup\Scripts\*.* -Force | Out-Null
 
 #================================================
-#   Disable Shift F10 in OOBE after installatie
-#   for security Reasons after recovery
+#   Disable Shift F10 after installation
+#   for security reasons also after recovery
 #================================================
 #$Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
 #If(!(test-path $Tagpath))
