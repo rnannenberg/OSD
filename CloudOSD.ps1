@@ -249,7 +249,7 @@ If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
 }
     Else {
-        write-host "Machine is not not a virtual machine" -ForegroundColor Yellow
+        write-host "Machine is not a virtual machine" -ForegroundColor Yellow
     }
 Start-Sleep -Seconds 10
 '@
@@ -424,7 +424,7 @@ Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Drivers.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $driverupdates = Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot
-$resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders -Wrap | Out-String
+$resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders -AutoSize -Wrap | Out-String
 Start-Sleep -Seconds 10
 
 Clear-Host
@@ -433,7 +433,7 @@ Write-Host -ForegroundColor Green "Install Windows Updates"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Updates.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot
-$resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders -AutoSize | Out-String
+$resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders -AutoSize -Wrap | Out-String
 $ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 10
 
