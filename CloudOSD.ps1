@@ -402,8 +402,7 @@ $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Drivers.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $driverupdates = Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot
 $resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders | Out-String
-write-host $resultdriverupdates
-Start-Sleep -Seconds 30
+Start-Sleep -Seconds 10
 
 Clear-Host
 #Install Software updates
@@ -412,11 +411,78 @@ $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Updates.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot
 $resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders | Out-String
-write-host $resultsoftwareupdates
 $ProgressPreference = 'SilentlyContinue'
-Start-Sleep -Seconds 30
+Start-Sleep -Seconds 10
 
 Clear-Host
+#Sending Teams message about installion
+Write-Host -ForegroundColor Green "Sending Teams message about installion"
+$URI = 'https://dnbnl.webhook.office.com/webhookb2/1aed7abf-4fcd-4c7b-aa48-bfb0cc71e010@9ecbd628-0072-405d-8567-32c6750b0d3e/IncomingWebhook/fc1ec9581d914a3087f5d0bf49c14934/ead7a441-7e2e-4cdc-9a42-24b53af16bb4'
+$BiosSerialNumber = Get-MyBiosSerialNumber
+$ComputerManufacturer = Get-MyComputerManufacturer
+$ComputerModel = Get-MyComputerModel
+$IPAddress = (Get-WmiObject win32_Networkadapterconfiguration | Where-Object{ $_.ipaddress -notlike $null }).IPaddress | Select-Object -First 1
+$connection = Get-NetAdapter -physical | where status -eq 'up'
+$int = $connection.InterfaceDescription
+$speed = $connection.LinkSpeed
+$ip = (Invoke-WebRequest https://ipinfo.io/ip).Content.Trim()
+$org = (Invoke-WebRequest https://ipinfo.io/org).Content.Trim()
+$body = ConvertTo-Json -Depth 4 @{
+title    = "$pc"
+text   = " "
+sections = @(
+   @{
+     activityTitle    = 'OS Cloud Deployment/Recovery Windows 11'
+     activitySubtitle = 'Ron'
+   },
+   @{
+     title = '<h2 style=color:blue;>Deployment Details'
+     facts = @(
+       @{
+         name  = 'BIOS Serial'
+         value = $BiosSerialNumber
+       },
+       @{
+         name  = 'Computer Manufacturer'
+         value = "$ComputerManufacturer"
+       },
+        @{
+         name  = 'Computer Model'
+         value = "$ComputerModel"
+       },
+        @{
+         name  = 'Private IP Address'
+         value = $IPAddress
+       },
+        @{
+         name  = 'Public IP Address'
+         value = $ip
+       },
+        @{
+         name  = 'Interface'
+         value = $int
+       },
+        @{
+         name  = 'LinkSpeed'
+         value = $speed
+       },
+        @{
+         name  = 'Provider'
+         value = $org
+       },
+        @{
+         name  = 'Sofware Updates'
+         value = $resultsoftwareupdates
+       },        
+       @{
+         name  = 'Driver Updates'
+         value = $resultdriverupdates
+       }
+     )
+   }
+)
+}
+Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType 'application/json'
 Write-Host -ForegroundColor Green "OOBE update phase ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 Remove-Item C:\Drivers -Force -Recurse | Out-Null
