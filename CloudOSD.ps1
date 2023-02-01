@@ -121,7 +121,7 @@ $Title = "OOBE VcRedist Download and install supported versions"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
-[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host "VcRedist Download and install supported versions" -ForegroundColor Green
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-VcRedist.log"
@@ -132,7 +132,8 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
 Install-Module -Name VcRedist -Force | Out-Null
-iex "& { $(irm https://vcredist.com/install.ps1) }" | Out-Null
+#iex "& { $(irm https://vcredist.com/install.ps1) }" | Out-Null
+iex ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encoding ascii -Force
 
