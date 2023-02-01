@@ -111,7 +111,8 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
 Install-Module -Name PowerShellGet -Force | Out-Null
-iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
+Invoke-Expression "& { $(Invoke-RestMethod 'https://aka.ms/install-powershell.ps1') } -UseMSI -Quiet"
+#iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
 
@@ -207,7 +208,8 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
-iex "& { $(irm https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
+Invoke-Expression "& { $(Invoke-RestMethod 'https://dot.net/v1/dotnet-install.ps1') } -Channel STS -Runtime windowsdesktop"
+#iex "& { $(irm https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
 
