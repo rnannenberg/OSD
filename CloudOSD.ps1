@@ -509,6 +509,8 @@ $body = ConvertTo-Json -Depth 4 @{
 )
 }
 Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType 'application/json'
+Out-File -FilePath C:\Windows\Temp\Json.txt -InputObject $body
+
 Write-Host -ForegroundColor Green "OOBE update phase ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 Remove-Item C:\Drivers -Force -Recurse | Out-Null
