@@ -426,8 +426,8 @@ $ProgressPreference = 'Continue'
 Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Drivers.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
-$driverupdates = Install-WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot
-$resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders -AutoSize | Out-String
+$driverupdates = Install-WindowsUpdate -UpdateType Driver -NotTitle "Preview" -AcceptAll -IgnoreReboot
+$resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders | Out-String -Width 100
 Start-Sleep -Seconds 10
 
 Clear-Host
@@ -435,8 +435,8 @@ Clear-Host
 Write-Host -ForegroundColor Green "Install Windows Updates"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Updates.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
-$softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot
-$resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders -AutoSize | Out-String
+$softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -NotTitle "Preview" -AcceptAll -IgnoreReboot
+$resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders | Out-String -Width 100
 $ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 10
 
