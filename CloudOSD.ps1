@@ -427,7 +427,7 @@ Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Drivers.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $driverupdates = Install-WindowsUpdate -UpdateType Driver -NotTitle "Preview" -AcceptAll -IgnoreReboot
-$resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders | Out-String -Width 100
+$resultdriverupdates = $driverupdates | Format-Table Title,Result -HideTableHeaders | Out-String
 Start-Sleep -Seconds 10
 
 Clear-Host
@@ -436,7 +436,7 @@ Write-Host -ForegroundColor Green "Install Windows Updates"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Updates.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -NotTitle "Preview" -AcceptAll -IgnoreReboot
-$resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders | Out-String -Width 100
+$resultsoftwareupdates = $softwareupdates | Format-Table Title,Result -HideTableHeaders | Out-String
 $ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 10
 
@@ -454,9 +454,9 @@ $speed = $connection.LinkSpeed
 $ip = (Invoke-WebRequest https://ipinfo.io/ip).Content.Trim()
 $org = (Invoke-WebRequest https://ipinfo.io/org).Content.Trim()
 $body = ConvertTo-Json -Depth 4 @{
-title    = "$pc"
-text   = " "
-sections = @(
+   title    = "$pc"
+   text   = " "
+   sections = @(
    @{
      activityTitle    = 'OS Cloud Deployment Windows 11'
      activitySubtitle = 'OSD'
