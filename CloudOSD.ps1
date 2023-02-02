@@ -407,7 +407,7 @@ ForEach($app in $appname){
 Start-Sleep -Seconds 10
 
 Clear-Host 
-Write-Host -ForegroundColor Green "Install .Net Framework"
+Write-Host -ForegroundColor Green "Install another .Net Framework"
 $Result = Get-MyWindowsCapability -Match 'NetFX' -Detail
 foreach ($Item in $Result) {
     if ($Item.State -eq 'Installed') {
