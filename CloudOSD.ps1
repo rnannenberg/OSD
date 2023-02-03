@@ -120,7 +120,7 @@ $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding as
 #  WinPE PostOS
 #  VcRedist.ps1
 #================================================
-$OOBEpsTasks = @'
+$OOBEvcTasks = @'
 $Title = "OOBE VcRedist Download and install supported versions"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
@@ -138,13 +138,13 @@ Install-Module -Name PowerShellGet -Force | Out-Null
 Install-Module -Name VcRedist -Force | Out-Null
 iex ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))
 '@
-$OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encoding ascii -Force
+$OOBEvcTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encoding ascii -Force
 
 #================================================
 #  WinPE PostOS
 #  wifi.ps1
 #================================================
-$OOBEnetTasks = @'
+$OOBEWiFiTasks = @'
 $Title = "OOBE Add WiFi SSID's to the system if exist"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
@@ -187,7 +187,7 @@ if (Test-WebConnection -Uri 'google.com') {
    }
 Start-Sleep -Seconds 10
 '@
-$OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encoding ascii -Force
+$OOBEWiFiTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encoding ascii -Force
 
 #================================================
 #  WinPE PostOS
@@ -217,7 +217,7 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding 
 #  WinPE PostOS
 #  vm.ps1
 #================================================
-$OOBEpsTasks = @'
+$OOBEvmTasks = @'
 $Title = "Check if machine is a VM"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
@@ -255,13 +255,13 @@ If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     }
 Start-Sleep -Seconds 10
 '@
-$OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding ascii -Force
+$OOBEvmTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding ascii -Force
 
 #================================================
 #  WinPE PostOS
 #  Bios.ps1
 #================================================
-$OOBEnetTasks = @'
+$OOBEBiosTasks = @'
 $Title = "Check Bios settings"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
@@ -304,13 +304,13 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     Start-Sleep -Seconds 5
 }
 '@
-$OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding ascii -Force
+$OOBEBiosTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding ascii -Force
 
 #================================================
 #   WinPE PostOS
 #   oobe.ps1
 #================================================
-$OOBEPS1Tasks = @'
+$OOBETasks = @'
 $Title = "OOBE installation/update phase"
 $host.UI.RawUI.WindowTitle = $Title
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
@@ -529,7 +529,7 @@ Else {
 
 Restart-Computer -Force
 '@
-$OOBEPS1Tasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding ascii -Force
+$OOBETasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding ascii -Force
 
 #================================================
 #   Disable Shift F10 in OOBE
