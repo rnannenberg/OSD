@@ -195,7 +195,7 @@ Start-Sleep -Seconds 10
 #=================================================
 #	Test Internet Connection
 #=================================================
-Write-Host -ForegroundColor DarkGrayn "Test internet connection google.com " -NoNewline
+Write-Host -ForegroundColor DarkGray "Test internet connection google.com " -NoNewline
 if (Test-WebConnection -Uri 'google.com') {
    Write-Host -ForegroundColor Green 'OK'
    Write-Host -ForegroundColor DarkGray "You are connected to the Internet"
