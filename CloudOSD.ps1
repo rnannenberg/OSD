@@ -111,16 +111,14 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
 Install-Module -Name PowerShellGet -Force | Out-Null
 $job = Start-Job -ScriptBlock {Invoke-Expression "& { $(Invoke-RestMethod 'https://aka.ms/install-powershell.ps1') } -UseMSI -Quiet"}
-if($job |Wait-Job -Timeout 300){
-  # If it completed successfully, State will have the value `Completed`
-  if($job.State -eq 'Completed'){
+if($job |Wait-Job -Timeout 300) {
+  if($job.State -eq 'Completed') {
      Write-Host "PowerShell 7 installed" -ForegroundColor Green
      Start-Sleep -Seconds 5       
   }
-  else{
-    # In this case I know the command is failing
+  else {
      Write-Host -ForegroundColor Red "Oops, something went wrong!"
-     Write-Host -ForegroundColor Red "The joberror was: $job.State"
+     Write-Host -ForegroundColor Red "The error was: $job.State"
      Write-Host -ForegroundColor Red "Lets reboot and try again!"
      Start-Sleep -Seconds 10
      Restart-Computer -Force    
@@ -149,20 +147,20 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
 Install-Module -Name VcRedist -Force | Out-Null
-#iex ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))
-try {
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))
-    Write-Host "VcRedist All supported versions are installed" -ForegroundColor Green
-    Start-Sleep -Seconds 5
-} catch {
-    $ErrorMessage = $_.Exception.Message
-    Write-Host -ForegroundColor Red "Oops, something went wrong!"
-    Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
-    Write-Host -ForegroundColor Red "Lets reboot and try again!"
-    Start-Sleep -Seconds 10
-    Restart-Computer -Force
+$job = Start-Job -ScriptBlock {Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))}
+if($job |Wait-Job -Timeout 300) {
+  if($job.State -eq 'Completed') {
+     Write-Host "VcRedist All supported versions are installed" -ForegroundColor Green
+     Start-Sleep -Seconds 5       
+  }
+  else {
+     Write-Host -ForegroundColor Red "Oops, something went wrong!"
+     Write-Host -ForegroundColor Red "The error was: $job.State"
+     Write-Host -ForegroundColor Red "Lets reboot and try again!"
+     Start-Sleep -Seconds 10
+     Restart-Computer -Force    
+  }
 }
-
 '@
 $OOBEvcTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encoding ascii -Force
 
@@ -234,17 +232,19 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
-try {
-    Invoke-Expression "& { $(Invoke-RestMethod 'https://dot.net/v1/dotnet-install.ps1') } -Channel STS -Runtime windowsdesktop"
-    Write-Host "Lastest .Net Framework is installed" -ForegroundColor Green
-    Start-Sleep -Seconds 5
-} catch {
-    $ErrorMessage = $_.Exception.Message
-    Write-Host -ForegroundColor Red "Oops, something went wrong!"
-    Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
-    Write-Host -ForegroundColor Red "Lets reboot and try again!"
-	Start-Sleep -Seconds 10
-    Restart-Computer -Force
+$job = Start-Job -ScriptBlock {Invoke-Expression "& { $(Invoke-RestMethod 'https://dot.net/v1/dotnet-install.ps1') } -Channel STS -Runtime windowsdesktop"}
+if($job |Wait-Job -Timeout 300) {
+  if($job.State -eq 'Completed') {
+     Write-Host "Lastest .Net Framework is installed" -ForegroundColor Green
+     Start-Sleep -Seconds 5       
+  }
+  else {
+     Write-Host -ForegroundColor Red "Oops, something went wrong!"
+     Write-Host -ForegroundColor Red "The error was: $job.State"
+     Write-Host -ForegroundColor Red "Lets reboot and try again!"
+     Start-Sleep -Seconds 10
+     Restart-Computer -Force    
+  }
 }
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
