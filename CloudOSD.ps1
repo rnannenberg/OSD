@@ -3,7 +3,7 @@
 #   Windows 11 22H2 Enterprise us Volume
 #   No Autopilot
 #   No Office Deployment Tool
-#   Version 1.0
+#   Version 1.1
 #================================================
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
@@ -111,8 +111,17 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
 Install-Module -Name PowerShellGet -Force | Out-Null
-Invoke-Expression "& { $(Invoke-RestMethod 'https://aka.ms/install-powershell.ps1') } -UseMSI -Quiet"
-#iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
+try {
+    Invoke-Expression "& { $(Invoke-RestMethod 'https://aka.ms/install-powershell.ps1') } -UseMSI -Quiet"
+    Write-Host "PowerShell 7 installed" -ForegroundColor Green
+} catch {
+    $ErrorMessage = $_.Exception.Message
+    Write-Host -ForegroundColor Red "Oops, something went wrong!"
+    Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
+    Write-Host -ForegroundColor Red "Lets reboot and try again!"
+	Start-Sleep -Seconds 10
+}
+
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
 
@@ -136,7 +145,18 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
 Install-Module -Name VcRedist -Force | Out-Null
-iex ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))
+#iex ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))
+try {
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))
+    Write-Host "VcRedist All supported versions are installed" -ForegroundColor Green
+} catch {
+    $ErrorMessage = $_.Exception.Message
+    Write-Host -ForegroundColor Red "Oops, something went wrong!"
+    Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
+    Write-Host -ForegroundColor Red "Lets reboot and try again!"
+	Start-Sleep -Seconds 10
+}
+
 '@
 $OOBEvcTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encoding ascii -Force
 
@@ -174,13 +194,13 @@ Start-Sleep -Seconds 10
 #=================================================
 #	Test Internet Connection
 #=================================================
-Write-Host -ForegroundColor Green "Test internet connection google.com " -NoNewline
+Write-Host -ForegroundColor DarkGrayn "Test internet connection google.com " -NoNewline
 if (Test-WebConnection -Uri 'google.com') {
    Write-Host -ForegroundColor Green 'OK'
    Write-Host -ForegroundColor DarkGray "You are connected to the Internet"
 }
    else {
-       	Write-Host -ForegroundColor Red "FAIL"
+       	Write-Host -ForegroundColor Red "FAILED"
         Write-Host -ForegroundColor Red "Lets reboot and try again!"
 	Start-Sleep -Seconds 10
 	Restart-Computer -Force
@@ -200,7 +220,7 @@ $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
-write-host ".Net Framework 7 Download and install" -ForegroundColor Green
+Write-Host ".Net Framework 7 Download and install" -ForegroundColor Green
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Framework.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
@@ -208,8 +228,16 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
-Invoke-Expression "& { $(Invoke-RestMethod 'https://dot.net/v1/dotnet-install.ps1') } -Channel STS -Runtime windowsdesktop"
-#iex "& { $(irm https://dot.net/v1/dotnet-install.ps1) } -Channel STS -Runtime windowsdesktop"
+try {
+    Invoke-Expression "& { $(Invoke-RestMethod 'https://dot.net/v1/dotnet-install.ps1') } -Channel STS -Runtime windowsdesktop"
+    Write-Host "Lastest .Net Framework is installed" -ForegroundColor Green
+} catch {
+    $ErrorMessage = $_.Exception.Message
+    Write-Host -ForegroundColor Red "Oops, something went wrong!"
+    Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
+    Write-Host -ForegroundColor Red "Lets reboot and try again!"
+	Start-Sleep -Seconds 10
+}
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
 
@@ -458,8 +486,8 @@ $body = ConvertTo-Json -Depth 4 @{
    text   = " "
    sections = @(
    @{
-     activityTitle    = 'OS Cloud Deployment Windows 11'
-     activitySubtitle = 'OSD'
+     activityTitle    = 'OS Cloud Installation and Recovery Windows 11'
+     activitySubtitle = 'OS Deployment'
    },
    @{
      title = '<h2 style=color:blue;>Deployment Details'
