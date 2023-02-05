@@ -108,19 +108,19 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
 Install-Module -Name PowerShellGet -Force | Out-Null
-try {
-    Invoke-Expression "& { $(Invoke-RestMethod 'https://aka.ms/install-powershell.ps1') } -UseMSI -Quiet"
+Start-Job -Name InstallPS -ScriptBlock {Invoke-Expression "& { $(Invoke-RestMethod 'https://aka.ms/install-powershell.ps1') } -UseMSI -Quiet"}
+$JobRC = Wait-Job -Name InstallPS -Timeout 120
+If ($JobRC -eq "Completed") {
     Write-Host "PowerShell 7 installed" -ForegroundColor Green
     Start-Sleep -Seconds 5
-} catch {
-    $ErrorMessage = $_.Exception.Message
+}
+Else {
     Write-Host -ForegroundColor Red "Oops, something went wrong!"
-    Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
+    Write=Host -ForegroundColor Red "The joberror was: $JobRC"
     Write-Host -ForegroundColor Red "Lets reboot and try again!"
 	Start-Sleep -Seconds 10
     Restart-Computer -Force
 }
-
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
 
