@@ -6,7 +6,7 @@ $Version = "1.1"
 #================================================
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
-Write-Host -ForegroundColor Green "Starting OSDCloud ZTI verion $Version"
+Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version $Version"
 $OSDDEBUG = "False"
 
 #================================================
@@ -286,7 +286,7 @@ If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     Else {
         write-host "Machine is not a virtual machine" -ForegroundColor Yellow
     }
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 5
 '@
 $OOBEvmTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding ascii -Force
 
@@ -437,7 +437,7 @@ ForEach($app in $appname){
                Write-Host " (Failed or $App not on system)"
            }
 }
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 5
 
 Clear-Host 
 Write-Host -ForegroundColor Green "Install another .Net Framework"
@@ -451,7 +451,7 @@ foreach ($Item in $Result) {
         $Item | Add-WindowsCapability -Online -ErrorAction Ignore | Out-Null
     }
 }
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 5
 
 Clear-Host
 #Install Driver updates
@@ -461,7 +461,7 @@ $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Drivers.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $driverupdates = Install-WindowsUpdate -UpdateType Driver -NotTitle "Preview" -AcceptAll -IgnoreReboot
 $resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders | Out-String
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 5
 
 Clear-Host
 #Install Software updates
@@ -471,7 +471,7 @@ Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -NotTitle "Preview" -AcceptAll -IgnoreReboot
 $resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders | Out-String
 $ProgressPreference = 'SilentlyContinue'
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 5
 
 Clear-Host
 #Sending Teams message about installion
