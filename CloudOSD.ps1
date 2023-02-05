@@ -7,7 +7,7 @@
 #================================================
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
-Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
+Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version 1.1"
 $OSDDebug = "True"
 
 #================================================
