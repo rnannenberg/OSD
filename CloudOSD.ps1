@@ -2,13 +2,12 @@
 #   OSDCloud Task Sequence
 #   Windows 11 22H2 Enterprise us Volume
 #   No Autopilot
-#   No Office Deployment Tool
-#   Version 1.1
+$Version = "1.1"
 #================================================
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
-Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version 1.1"
-$OSDDebug = "True"
+Write-Host -ForegroundColor Green "Starting OSDCloud ZTI verion $Version"
+$OSDDEBUG = "False"
 
 #================================================
 #   Change the ErrorActionPreference
@@ -30,7 +29,7 @@ If (([Windows.Forms.SystemInformation]::PowerStatus).PowerLineStatus -ne "Online
     Start-Sleep -Seconds 60
 }
 
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 5
 #================================================
 #   [OS] Start-OSDCloud with Params
 #================================================
@@ -114,12 +113,14 @@ Install-Module -Name PowerShellGet -Force | Out-Null
 try {
     Invoke-Expression "& { $(Invoke-RestMethod 'https://aka.ms/install-powershell.ps1') } -UseMSI -Quiet"
     Write-Host "PowerShell 7 installed" -ForegroundColor Green
+    Start-Sleep -Seconds 5
 } catch {
     $ErrorMessage = $_.Exception.Message
     Write-Host -ForegroundColor Red "Oops, something went wrong!"
     Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
     Write-Host -ForegroundColor Red "Lets reboot and try again!"
 	Start-Sleep -Seconds 10
+    Restart-Computer -Force
 }
 
 '@
@@ -149,12 +150,14 @@ Install-Module -Name VcRedist -Force | Out-Null
 try {
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://vcredist.com/install.ps1'))
     Write-Host "VcRedist All supported versions are installed" -ForegroundColor Green
+    Start-Sleep -Seconds 5
 } catch {
     $ErrorMessage = $_.Exception.Message
     Write-Host -ForegroundColor Red "Oops, something went wrong!"
     Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
     Write-Host -ForegroundColor Red "Lets reboot and try again!"
 	Start-Sleep -Seconds 10
+    Restart-Computer -Force
 }
 
 '@
@@ -231,12 +234,14 @@ Install-Module -Name PowerShellGet -Force | Out-Null
 try {
     Invoke-Expression "& { $(Invoke-RestMethod 'https://dot.net/v1/dotnet-install.ps1') } -Channel STS -Runtime windowsdesktop"
     Write-Host "Lastest .Net Framework is installed" -ForegroundColor Green
+    Start-Sleep -Seconds 5
 } catch {
     $ErrorMessage = $_.Exception.Message
     Write-Host -ForegroundColor Red "Oops, something went wrong!"
     Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
     Write-Host -ForegroundColor Red "Lets reboot and try again!"
 	Start-Sleep -Seconds 10
+    Restart-Computer -Force
 }
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
@@ -346,7 +351,7 @@ $host.UI.RawUI.WindowTitle = $Title
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
-$OOBEDebug = "True"
+$OOBESHIFTF10 = "False"
 
 # Change the ActionPreferences
 $ErrorActionPreference = 'SilentlyContinue'
@@ -546,9 +551,9 @@ Remove-Item C:\Intel -Force -Recurse | Out-Null
 Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
 #================================================
 #   Disable Shift F10 after installation
-#   for security reasons, also after recovery
+#   for security reasons
 #================================================
-If ($OOBEDebug -eq "False") {
+If ($OOBESHIFTF10 -eq "False") {
    Remove-Item C:\Windows\Setup\Scripts\*.* -Exclude *.TAG -Force | Out-Null
 }
 Else {
@@ -563,7 +568,7 @@ $OOBETasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding as
 #   Disable Shift F10 in OOBE
 #   for security Reasons
 #================================================
-If ($OSDDebug -eq "False") {
+If ($OSDDEBUG -eq "False") {
    $Tagpath = "C:\Windows\Setup\Scripts\DisableCMDRequest.TAG"
    If(!(test-path $Tagpath)) {
       New-Item -ItemType file -Force -Path $Tagpath | Out-Null
