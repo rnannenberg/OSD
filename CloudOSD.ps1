@@ -544,9 +544,12 @@ Out-File -FilePath C:\Windows\Temp\Json.txt -InputObject $body | Out-Null
 
 Write-Host -ForegroundColor Green "OOBE update phase ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
-Remove-Item C:\Drivers -Force -Recurse | Out-Null
-Remove-Item C:\Intel -Force -Recurse | Out-Null
-Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
+If ($OSDDEBUG -eq "False") {
+   Remove-Item C:\Drivers -Force -Recurse | Out-Null
+   Remove-Item C:\Intel -Force -Recurse | Out-Null
+   Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
+}
+
 #================================================
 #   Disable Shift F10 after installation
 #   for security reasons
