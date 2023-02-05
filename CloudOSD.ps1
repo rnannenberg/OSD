@@ -84,7 +84,7 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM
 # Check and change the Recovery settings
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
