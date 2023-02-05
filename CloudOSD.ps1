@@ -8,7 +8,7 @@ $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version $Version"
 $OSDDEBUG = "True"
-If ($OSDDEBUG = $True") {
+If ($OSDDEBUG = "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
 #================================================
@@ -352,7 +352,7 @@ $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
 $OOBESHIFTF10 = "True"
-If ($OOBESHIFTF10 = $True") {
+If ($OOBESHIFTF10 = "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
 
