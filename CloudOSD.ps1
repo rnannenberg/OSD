@@ -8,7 +8,7 @@ $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version $Version"
 $OSDDEBUG = "True"
-If ($OSDDEBUG = "True") {
+If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
 #================================================
@@ -115,13 +115,13 @@ $JobRC = Wait-Job -Name InstallPS -Timeout 120
 If ($JobRC -eq "Completed") {
     Write-Host "PowerShell 7 installed" -ForegroundColor Green
     Start-Sleep -Seconds 5
-}
-Else {
-    Write-Host -ForegroundColor Red "Oops, something went wrong!"
-    Write=Host -ForegroundColor Red "The joberror was: $JobRC"
-    Write-Host -ForegroundColor Red "Lets reboot and try again!"
-	Start-Sleep -Seconds 10
-    Restart-Computer -Force
+} 
+  Else {
+     Write-Host -ForegroundColor Red "Oops, something went wrong!"
+     Write=Host -ForegroundColor Red "The joberror was: $JobRC"
+     Write-Host -ForegroundColor Red "Lets reboot and try again!"
+     Start-Sleep -Seconds 10
+     Restart-Computer -Force
 }
 '@
 $OOBEpsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\ps.ps1' -Encoding ascii -Force
@@ -156,7 +156,7 @@ try {
     Write-Host -ForegroundColor Red "Oops, something went wrong!"
     Write=Host -ForegroundColor Red "The error catched was: $ErrorMessage"
     Write-Host -ForegroundColor Red "Lets reboot and try again!"
-	Start-Sleep -Seconds 10
+    Start-Sleep -Seconds 10
     Restart-Computer -Force
 }
 
@@ -352,7 +352,7 @@ $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
 $OOBESHIFTF10 = "True"
-If ($OOBESHIFTF10 = "True") {
+If ($OOBESHIFTF10 -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
 
