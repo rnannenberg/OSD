@@ -97,8 +97,6 @@ $Title = "OOBE PowerShell 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
-$ErrorActionPreference = 'Continue'
-$ProgressPreference = "Continue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 write-host "PowerShell 7 Download and install" -ForegroundColor Green
@@ -541,8 +539,8 @@ $body = ConvertTo-Json -Depth 4 @{
    }
 )
 }
-Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType 'application/json'
-Out-File -FilePath C:\Windows\Temp\Json.txt -InputObject $body
+Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType 'application/json' | Out-Null
+Out-File -FilePath C:\Windows\Temp\Json.txt -InputObject $body | Out-Null
 
 Write-Host -ForegroundColor Green "OOBE update phase ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
