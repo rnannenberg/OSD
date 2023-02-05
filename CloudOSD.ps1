@@ -7,7 +7,7 @@ $Version = "1.1"
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version $Version"
-$OSDDEBUG = "False"
+$OSDDEBUG = "True"
 
 #================================================
 #   Change the ErrorActionPreference
@@ -349,7 +349,7 @@ $host.UI.RawUI.WindowTitle = $Title
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
-$OOBESHIFTF10 = "False"
+$OOBESHIFTF10 = "True"
 
 # Change the ActionPreferences
 $ErrorActionPreference = 'SilentlyContinue'
