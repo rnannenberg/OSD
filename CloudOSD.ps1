@@ -390,7 +390,8 @@ Clear-Host
 # Remove apps from system
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
-$appname = @( 
+$appname = @(
+"Clipchamp.Clipchamp"
 "Microsoft.BingNews"
 "Microsoft.BingWeather"
 "Microsoft.GamingApp"
@@ -413,7 +414,8 @@ $appname = @(
 "Microsoft.YourPhone"
 "Microsoft.ZuneMusic"
 "Microsoft.ZuneVideo"
-"MicrosoftTeams"
+"MicrosoftCorporationII.MicrosoftFamily"
+"MicrosoftCorporationII.QuickAssist"
 ) 
 ForEach($app in $appname){
     try  {
