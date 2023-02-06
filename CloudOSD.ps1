@@ -7,7 +7,7 @@ $Version = "1.1"
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version $Version"
-$OSDDEBUG = "True"
+$OSDDEBUG = "False"
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
@@ -89,7 +89,7 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM
 # Check and change the Recovery settings
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -228,7 +228,7 @@ $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
 
-#Change URL/exe in code if new version is added
+#Change URL and exe in code if new version is necessary
 #windowsdesktop-runtime-win-x64.exe
 #https://aka.ms/dotnet/7.0/windowsdesktop-runtime-win-x64.exe
 
@@ -375,8 +375,8 @@ $host.UI.RawUI.WindowTitle = $Title
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
-$OOBESHIFTF10 = "True"
-$OSDDEBUG = "True"
+$OOBESHIFTF10 = "False"
+$OSDDEBUG = "False"
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
