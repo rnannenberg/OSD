@@ -15,9 +15,14 @@ If ($OSDDEBUG -eq "True") {
 #   Change the ErrorActionPreference
 #   to 'SilentlyContinue' Or 'Continue'
 #================================================
-$ErrorActionPreference = 'SilentlyContinue'
-$ProgressPreference = "SilentlyContinue"
-#$ErrorActionPreference = 'Continue'
+If ($OSDDEBUG -ne "True") {
+   $ErrorActionPreference = 'SilentlyContinue'
+   $ProgressPreference = 'SilentlyContinue'
+   }
+   Else {
+	$ErrorActionPreference = 'Continue'
+	$ProgressPreference = 'Continue'
+}
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
@@ -84,7 +89,7 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM
 # Check and change the Recovery settings
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -237,7 +242,7 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
-$job = Start-Job -ScriptBlock {Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename"}
+$job = Start-Job -ScriptBlock {(Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename")}
 if($job |Wait-Job -Timeout 300) {
   if($job.State -eq 'Completed') {
      $params = "/install /passive /norestart"
@@ -572,11 +577,13 @@ If ($OSDDEBUG -eq "False") {
 #   Disable Shift F10 after installation
 #   for security reasons
 #================================================
-If ($OOBESHIFTF10 -eq "False") {
-   Remove-Item C:\Windows\Setup\Scripts\*.* -Exclude *.TAG -Force | Out-Null
-}
-Else {
-   Remove-Item C:\Windows\Setup\Scripts\*.* -Force | Out-Null
+If ($OSDDEBUG -eq "False") {
+   If ($OOBESHIFTF10 -eq "False") {
+      Remove-Item C:\Windows\Setup\Scripts\*.* -Exclude *.TAG -Force | Out-Null
+   }
+   Else {
+      Remove-Item C:\Windows\Setup\Scripts\*.* -Force | Out-Nul
+   }
 }
 
 Restart-Computer -Force
