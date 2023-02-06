@@ -218,13 +218,14 @@ $OOBEWiFiTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encodin
 #  net.ps1
 #================================================
 $OOBEnetTasks = @'
-$Title = "OOBE .Net Framework 7 Download and install"
+$Title = "OOBE Latest .Net Framework Download and install"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
 
-#Change filename for new version, also check URL
-$filename = "windowsdesktop-runtime-7.0.2-win-x64.exe"
+#Change URL if new version is added
+$filename = "windowsdesktop-runtime-win-x64.exe"
+$url = "https://aka.ms/dotnet/7.0/windowsdesktop-runtime-win-x64.exe"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
@@ -236,12 +237,22 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
-$url = "https://download.visualstudio.microsoft.com/download/pr/8d4ae76c-10d6-450c-b1c2-76b7b2156dc3/9207c5d5d0b608d8ec0622efa4419ed6/$filename"
-Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename"
-$params = "/install /passive /norestart"
-Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
-Write-Host "Lastest .Net Framework is installed" -ForegroundColor Green
-Start-Sleep -Seconds 5       
+$job = Start-Job -ScriptBlock {Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename"}
+if($job |Wait-Job -Timeout 300) {
+  if($job.State -eq 'Completed') {
+     $params = "/install /passive /norestart"
+     Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
+     Write-Host "Latest .Net Framework is installed" -ForegroundColor Green
+     Start-Sleep -Seconds 5       
+  }
+  else {
+     Write-Host -ForegroundColor Red "Oops, something went wrong!"
+     Write-Host -ForegroundColor Red "The error was: $job.State"
+     Write-Host -ForegroundColor Red "Lets reboot and try again!"
+     Start-Sleep -Seconds 10
+     Restart-Computer -Force    
+  }
+}   
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
 
