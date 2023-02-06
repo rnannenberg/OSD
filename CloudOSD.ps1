@@ -242,22 +242,11 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
-$job = Start-Job -ScriptBlock {(Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename")}
-if($job |Wait-Job -Timeout 300) {
-  if($job.State -eq 'Completed') {
-     $params = "/install /passive /norestart"
-     Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
-     Write-Host "Latest .Net Framework is installed" -ForegroundColor Green
-     Start-Sleep -Seconds 5       
-  }
-  else {
-     Write-Host -ForegroundColor Red "Oops, something went wrong!"
-     Write-Host -ForegroundColor Red "The error was: $job.State"
-     Write-Host -ForegroundColor Red "Lets reboot and try again!"
-     Start-Sleep -Seconds 10
-     Restart-Computer -Force    
-  }
-}   
+Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename"
+$params = "/install /passive /norestart"
+Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
+Write-Host "Latest .Net Framework is installed" -ForegroundColor Green
+Start-Sleep -Seconds 5
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
 
