@@ -89,7 +89,7 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM
 # Check and change the Recovery settings
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -242,8 +242,10 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
+write-host "Downloading"
 Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename"
 $params = "/install /passive /norestart"
+write-host "Installing"
 Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
 Write-Host "Latest .Net Framework is installed" -ForegroundColor Green
 Start-Sleep -Seconds 5
