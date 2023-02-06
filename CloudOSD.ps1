@@ -228,9 +228,9 @@ $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
 
-#Change URL if new version is added
-$filename = "windowsdesktop-runtime-win-x64.exe"
-$url = "https://aka.ms/dotnet/7.0/windowsdesktop-runtime-win-x64.exe"
+#Change URL/exe in code if new version is added
+#windowsdesktop-runtime-win-x64.exe
+#https://aka.ms/dotnet/7.0/windowsdesktop-runtime-win-x64.exe
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
@@ -243,12 +243,12 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
 write-host "Downloading latest version"
-$job = Start-Job -ScriptBlock {Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename"}
+$job = Start-Job -ScriptBlock {Invoke-WebRequest -Uri https://aka.ms/dotnet/7.0/windowsdesktop-runtime-win-x64.exe -OutFile "C:\Windows\Temp\windowsdesktop-runtime-win-x64.exe"}
 if($job |Wait-Job -Timeout 300) {
   if($job.State -eq 'Completed') {
      write-host "Installing"
      $params = "/install /passive /norestart"
-     Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
+     Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\windowsdesktop-runtime-win-x64.exe" -ArgumentList $params
      Write-Host "Latest .Net Framework is installed" -ForegroundColor Green
      Start-Sleep -Seconds 5       
   }
