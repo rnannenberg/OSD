@@ -364,6 +364,42 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
 $OOBEBiosTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encoding ascii -Force
 
 #================================================
+#  WinPE PostOS
+#  uwp.ps1
+#================================================
+$OOBEUWPTasks = @'
+$Title = "Downloading and Installing HP UWP apps"
+$host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
+$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-uwp.log"
+$null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
+$env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
+$env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
+$Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
+$env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
+   Write-Host -ForegroundColor Green "Install HPCMSL Module"
+   Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
+   if (!(Test-Path -Path "c:\drivers\uwp\")){New-Item -Path "c:\drivers\uwp\" -ItemType Directory -Force | Out-Null}
+   Write-Host "Downloading HP UWP Apps"
+   $UWP = New-HPUWPDriverPack -Path "c:\drivers\uwp\"
+   $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Recurse
+   Write-Host "Start Installing UWP Apps - $($InstallScript.FullName)"
+   Start-Process CMD.EXE -ArgumentList "/c $($InstallScript.FullName)" -Wait
+    
+    
+    
+    
+
+    Start-Sleep -Seconds 5
+
+'@
+$OOBEUWPTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\uwp.ps1' -Encoding ascii -Force
+
+#================================================
 #   WinPE PostOS
 #   oobe.ps1
 #================================================
