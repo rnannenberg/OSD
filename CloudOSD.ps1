@@ -386,7 +386,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    Write-Host -ForegroundColor Green "Install HPCMSL Module"
    Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
    if (!(Test-Path -Path "c:\drivers\uwp\")){New-Item -Path "c:\drivers\uwp\" -ItemType Directory -Force | Out-Null}
-   Write-Host "Downloading HP UWP Apps"
+   Write-Host "Downloading the HP UWP Apps for this machine"
    $UWP = New-HPUWPDriverPack -Path "c:\drivers\uwp\"
    $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
    Write-Host "Installing UWP Apps - $($InstallScript.FullName)"
