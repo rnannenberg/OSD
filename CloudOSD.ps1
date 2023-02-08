@@ -387,15 +387,9 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    Write-Host "Downloading HP UWP Apps"
    $UWP = New-HPUWPDriverPack -Path "c:\drivers\uwp\"
    $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Recurse
-   Write-Host "Start Installing UWP Apps - $($InstallScript.FullName)"
+   Write-Host "Installing UWP Apps - $($InstallScript.FullName)"
    Start-Process CMD.EXE -ArgumentList "/c $($InstallScript.FullName)" -Wait
-    
-    
-    
-    
-
-    Start-Sleep -Seconds 5
-
+   Start-Sleep -Seconds 5
 '@
 $OOBEUWPTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\uwp.ps1' -Encoding ascii -Force
 
