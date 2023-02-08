@@ -2,7 +2,7 @@
 #   OSDCloud Task Sequence
 #   Windows 11 22H2 Enterprise us Volume
 #   No Autopilot
-$Version = "1.1"
+$Version = "1.2"
 #================================================
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
