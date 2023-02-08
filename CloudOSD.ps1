@@ -18,10 +18,12 @@ If ($OSDDEBUG -eq "True") {
 If ($OSDDEBUG -ne "True") {
    $ErrorActionPreference = 'SilentlyContinue'
    $ProgressPreference = 'SilentlyContinue'
+   $WarningPreference = 'SilentlyContinue'
    }
    Else {
 	$ErrorActionPreference = 'Continue'
 	$ProgressPreference = 'Continue'
+	$WarningPreference = 'Continue'
 }
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
