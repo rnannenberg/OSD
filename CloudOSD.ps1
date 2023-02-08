@@ -422,7 +422,7 @@ $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
 $OOBESHIFTF10 = "False"
-$OSDDEBUG = "False
+$OSDDEBUG = "False"
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
