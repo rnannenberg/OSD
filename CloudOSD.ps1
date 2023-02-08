@@ -7,7 +7,7 @@ $Version = "1.2"
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version $Version"
-$OSDDEBUG = "True"
+$OSDDEBUG = "False"
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
@@ -88,10 +88,11 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\Vc
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM.ps1
 # Check and change the Recovery settings
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
-# Download and install the HP UWP apps
-start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\uwp.ps1
+# Download and install the HP UWP apps, Disabled this one... UWP install is to slow in OOBE
+# further testeing in test environment
+#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\uwp.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -229,11 +230,9 @@ $Title = "OOBE Latest .Net Framework Download and install"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
-
 #Change URL and exe in code if new version is necessary
 #windowsdesktop-runtime-win-x64.exe
 #https://aka.ms/dotnet/7.0/windowsdesktop-runtime-win-x64.exe
-
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 Write-Host ".Net Framework 7 Download and install" -ForegroundColor Green
@@ -387,11 +386,17 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
    if (!(Test-Path -Path "c:\drivers\uwp\")){New-Item -Path "c:\drivers\uwp\" -ItemType Directory -Force | Out-Null}
    Write-Host "Downloading HP UWP Apps for this machine"
-   $UWP = New-HPUWPDriverPack -Path "c:\drivers\uwp\"
-   $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
-   Write-Host "Installing UWP Apps - $($InstallScript.FullName)"
-   Start-Process CMD.EXE -ArgumentList "/c $($InstallScript.FullName)" -Wait
-   Start-Sleep -Seconds 5
+   New-HPUWPDriverPack -Path "c:\drivers\uwp\"
+   If ($? -eq "True") {
+      $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
+      Write-Host "Installing UWP Apps - $($InstallScript.FullName)"
+      Start-Process CMD.EXE -ArgumentList "/c $($InstallScript.FullName)" -Wait
+      Start-Sleep -Seconds 5
+   }
+   Else {
+    Write-Host "No UWP Apps found for this machines"
+   }
+}
 '@
 $OOBEUWPTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\uwp.ps1' -Encoding ascii -Force
 
@@ -408,15 +413,13 @@ $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
 $OOBESHIFTF10 = "False"
-$OSDDEBUG = "True"
+$OSDDEBUG = "False
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
-
 # Change the ActionPreferences
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = 'SilentlyContinue'
-
 # Set Environment
 Write-Host "Set Environment" -ForegroundColor Green
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
@@ -429,7 +432,6 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
         ForegroundColor = 'Green'
         NoNewLine       = $true
     }
-
 # Register Powershell Modules and install tools
 Write-Host "Register PSGallery" -ForegroundColor Green
 Register-PSRepository -Default | Out-Null
@@ -442,7 +444,6 @@ Install-Module OSD -Force | Out-Null
 Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
 Start-Sleep -Seconds 5
-
 Clear-Host
 # Remove apps from system
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
@@ -500,7 +501,6 @@ ForEach($app in $appname){
            }
 }
 Start-Sleep -Seconds 5
-
 Clear-Host 
 Write-Host -ForegroundColor Green "Install another .Net Framework"
 $Result = Get-MyWindowsCapability -Match 'NetFX' -Detail
@@ -514,7 +514,6 @@ foreach ($Item in $Result) {
     }
 }
 Start-Sleep -Seconds 5
-
 Clear-Host
 #Install Driver updates
 $ProgressPreference = 'Continue'
@@ -524,7 +523,6 @@ Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $driverupdates = Install-WindowsUpdate -UpdateType Driver -NotTitle "Preview" -AcceptAll -IgnoreReboot
 $resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders | Out-String
 Start-Sleep -Seconds 5
-
 Clear-Host
 #Install Software updates
 Write-Host -ForegroundColor Green "Install Windows Updates"
@@ -534,7 +532,6 @@ $softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -NotTitle "Preview" -A
 $resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders | Out-String
 $ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 5
-
 Clear-Host
 #Sending Teams message about installion
 Write-Host -ForegroundColor Green "Sending Teams message about installion"
@@ -605,7 +602,6 @@ $body = ConvertTo-Json -Depth 4 @{
 }
 Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType 'application/json' | Out-Null
 Out-File -FilePath C:\Windows\Temp\Json.txt -InputObject $body | Out-Null
-
 Write-Host -ForegroundColor Green "OOBE update phase ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 If ($OSDDEBUG -eq "False") {
@@ -613,7 +609,6 @@ If ($OSDDEBUG -eq "False") {
    Remove-Item C:\Intel -Force -Recurse | Out-Null
    Remove-Item C:\OSDCloud -Force -Recurse | Out-Null
 }
-
 #================================================
 #   Disable Shift F10 after installation
 #   for security reasons
@@ -626,7 +621,6 @@ If ($OSDDEBUG -eq "False") {
       Remove-Item C:\Windows\Setup\Scripts\*.* -Force | Out-Nul
    }
 }
-
 Restart-Computer -Force
 '@
 $OOBETasks | Out-File -FilePath 'C:\Windows\Setup\Scripts\oobe.ps1' -Encoding ascii -Force
