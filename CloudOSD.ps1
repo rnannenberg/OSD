@@ -91,7 +91,7 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM
 # Check and change the Recovery settings
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Download and install the HP UWP apps, disabled some unwanted things
-#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\uwp.ps1
+#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\appsuwp.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
@@ -366,17 +366,17 @@ $OOBEBiosTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encodin
 
 #================================================
 #  WinPE PostOS
-#  uwp.ps1
+#  appsuwp.ps1
 #================================================
 $OOBEUWPTasks = @'
-$Title = "Downloading and Installing HP UWP apps"
+$Title = "Downloading and Installing HP apps and UWP apps"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
 $WarningPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
-$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-uwp.log"
+$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-appsuwp.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
@@ -392,14 +392,30 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
       $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
       Write-Host "Installing UWP Apps - $($InstallScript.FullName)"
       Start-Process CMD.EXE -ArgumentList "/c $($InstallScript.FullName)" -Wait
-      Start-Sleep -Seconds 5
    }
    Else {
     Write-Host "No UWP Apps found for this machines"
    }
+   Write-Host "Searching for other apps for this type of machine"
+   $Software = Get-SoftpaqList -Category Software
+   foreach ($Record in $Software) {
+      iF ($Record.name -like "HP Programmable Key*") {
+	$HPId = $Record.id
+	$HPName = $Record.Name
+	$HPVersion = $Record.version
+	Write-Host "Downloading $HPid, $HPname with version $HPVersion"
+	Get-Softpaq -Number $HPid.substring(2) -SaveAs "C:\Drivers\$HPId.exe" -Overwrite Yes
+	Start-Process CMD.EXE -ArgumentList "/c $(C:\Drivers\$HPId.exe /s /f C:\Drivers\$HPid)" -Wait
+      } 
+   }
+
 }
+Else {
+   Write-Host "Not a HP machine"
+}
+Start-Sleep -Seconds 300
 '@
-$OOBEUWPTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\uwp.ps1' -Encoding ascii -Force
+$OOBEUWPTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\appsuwp.ps1' -Encoding ascii -Force
 
 #================================================
 #   WinPE PostOS
