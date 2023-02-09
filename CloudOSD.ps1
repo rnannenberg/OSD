@@ -391,10 +391,10 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    Write-Host -ForegroundColor Green "Install HPCMSL Module"
-   Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
+   Install-Module -Name HPCMSL -Force -AcceptLicense | Out-Null
    if (!(Test-Path -Path "c:\drivers\uwp\")){New-Item -Path "c:\drivers\uwp\" -ItemType Directory -Force | Out-Null}
    Write-Host "Downloading HP UWP Apps for this machine"
-   New-HPUWPDriverPack -Path "c:\drivers\uwp\" -UnselectList "Intel", "Nvidia", "Realtek", "Synaptics"
+   New-HPUWPDriverPack -Path "c:\drivers\uwp\" -UnselectList "Intel", "Nvidia", "Realtek", "Synaptics", "AMD"
    If ($? -eq "True") {
       $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
       Write-Host "Installing UWP Apps - $($InstallScript.FullName)"
@@ -543,7 +543,7 @@ $ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 5
 Clear-Host
 #Sending Teams message about installion
-Write-Host -ForegroundColor Green "Sending Teams message about installion"
+Write-Host -ForegroundColor Green "Sending Teams message about installation"
 $URI = 'https://dnbnl.webhook.office.com/webhookb2/1aed7abf-4fcd-4c7b-aa48-bfb0cc71e010@9ecbd628-0072-405d-8567-32c6750b0d3e/IncomingWebhook/fc1ec9581d914a3087f5d0bf49c14934/ead7a441-7e2e-4cdc-9a42-24b53af16bb4'
 $BiosSerialNumber = Get-MyBiosSerialNumber
 $ComputerManufacturer = Get-MyComputerManufacturer
@@ -610,8 +610,7 @@ $body = ConvertTo-Json -Depth 4 @{
 )
 }
 Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType 'application/json' | Out-Null
-Out-File -FilePath C:\Windows\Temp\Json.txt -InputObject $body | Out-Null
-Write-Host -ForegroundColor Green "OOBE update phase ready, cleanup and the restarting in 30 seconds!"
+Write-Host -ForegroundColor Green "OOBE Installation and update phase ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 If ($OSDDEBUG -eq "False") {
    Remove-Item C:\Drivers -Force -Recurse | Out-Null
