@@ -266,13 +266,6 @@ if($job |Wait-Job -Timeout 300) {
      Restart-Computer -Force    
   }
 }
-#write-host "Downloading"
-#Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename"
-#$params = "/install /passive /norestart"
-#write-host "Installing"
-#Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\$filename" -ArgumentList $params
-#Write-Host "Latest .Net Framework is installed" -ForegroundColor Green
-#Start-Sleep -Seconds 5
 '@
 $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net.ps1' -Encoding ascii -Force
 
