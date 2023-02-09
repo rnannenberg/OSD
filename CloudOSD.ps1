@@ -90,11 +90,10 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\Vc
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM.ps1
 # Check and change the Recovery settings
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
-# Download and install the HP UWP apps, Disabled this one... UWP install is to slow in OOBE
-# further testeing in test environment
+# Download and install the HP UWP apps, disabled some unwanted things
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\uwp.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+# start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -395,7 +394,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    Install-Module -Name HPCMSL -Force -AcceptLicens | Out-Null
    if (!(Test-Path -Path "c:\drivers\uwp\")){New-Item -Path "c:\drivers\uwp\" -ItemType Directory -Force | Out-Null}
    Write-Host "Downloading HP UWP Apps for this machine"
-   New-HPUWPDriverPack -Path "c:\drivers\uwp\" -UnselectList "Intel", "Nvidia"
+   New-HPUWPDriverPack -Path "c:\drivers\uwp\" -UnselectList "Intel", "Nvidia", "Realtek", "Synaptics"
    If ($? -eq "True") {
       $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
       Write-Host "Installing UWP Apps - $($InstallScript.FullName)"
