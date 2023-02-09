@@ -91,7 +91,7 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM
 # Check and change the Recovery settings
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Download and install the HP UWP apps, disabled some unwanted things
-#start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\appsuwp.ps1
+start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\appsuwp.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
@@ -386,32 +386,31 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    Write-Host -ForegroundColor Green "Install HPCMSL Module"
    Install-Module -Name HPCMSL -Force -AcceptLicense | Out-Null
    if (!(Test-Path -Path "c:\drivers\uwp\")){New-Item -Path "c:\drivers\uwp\" -ItemType Directory -Force | Out-Null}
-   Write-Host "Downloading HP UWP Apps for this machine"
+  Write-Host -ForegroundColor Green "Downloading HP UWP Apps for this machine"
    New-HPUWPDriverPack -Path "c:\drivers\uwp\" -UnselectList "Intel", "Nvidia", "Realtek", "Synaptics", "AMD"
    If ($? -eq "True") {
       $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
-      Write-Host "Installing UWP Apps - $($InstallScript.FullName)"
+      Write-Host -ForegroundColor Green "Installing UWP Apps - $($InstallScript.FullName)"
       Start-Process CMD.EXE -ArgumentList "/c $($InstallScript.FullName)" -Wait
    }
    Else {
     Write-Host "No UWP Apps found for this machines"
    }
-   Write-Host "Searching for other apps for this type of machine"
+   Write-Host -ForegroundColor Green "Searching for other apps for this machine"
    $Software = Get-SoftpaqList -Category Software
    foreach ($Record in $Software) {
       iF ($Record.name -like "HP Programmable Key*") {
-	$HPId = $Record.id
-	$HPName = $Record.Name
-	$HPVersion = $Record.version
-	Write-Host "Downloading $HPid, $HPname with version $HPVersion"
-	Get-Softpaq -Number $HPid.substring(2) -SaveAs "C:\Drivers\$HPId.exe" -Overwrite Yes
-	Start-Process CMD.EXE -ArgumentList "/c $(C:\Drivers\$HPId.exe /s /f C:\Drivers\$HPid)" -Wait
+	      $HPId = $Record.id
+	      $HPName = $Record.Name
+	      $HPVersion = $Record.version
+	      Write-Host -ForegroundColor Green "Downloading $HPid, $HPname with version $HPVersion"
+	      Get-Softpaq -Number $HPid.substring(2) -SaveAs "C:\Drivers\$HPId.exe" -Overwrite Yes
+	      Start-Process CMD.EXE -ArgumentList "/c $(C:\Drivers\$HPId.exe /s /f C:\Drivers\$HPid)" -Wait
       } 
    }
-
 }
 Else {
-   Write-Host "Not a HP machine"
+   Write-Host -ForegroundColor DarkGray "Not a HP machine"
 }
 Start-Sleep -Seconds 300
 '@
