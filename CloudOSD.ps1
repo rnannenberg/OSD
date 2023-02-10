@@ -409,7 +409,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    $HPSoftPaq = Get-SoftpaqList
    foreach ($HPPaq in $HPSoftPaq) {
       foreach ($app in $HPappnames) {	
-         If ($HPPaq.name -like $app) {
+         If ($app -like $HPPaq.name) {
 	      $HPId = $HPPaq.id
 	      $HPName = $HPPaq.Name
 	      $HPVersion = $HPPaq.version
