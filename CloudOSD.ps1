@@ -382,11 +382,17 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+
+# Setting names of extra HP SoftPaqs to install
+$HPappnames = @(
+"HP Programmable Key*"
+) 
+
 If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    Write-Host -ForegroundColor Green "Install HPCMSL Module"
    Install-Module -Name HPCMSL -Force -AcceptLicense | Out-Null
    if (!(Test-Path -Path "c:\drivers\uwp\")){New-Item -Path "c:\drivers\uwp\" -ItemType Directory -Force | Out-Null}
-  Write-Host -ForegroundColor Green "Downloading HP UWP Apps for this machine"
+   Write-Host -ForegroundColor Green "Downloading HP UWP Apps for this machine"
    New-HPUWPDriverPack -Path "c:\drivers\uwp\" -UnselectList "Intel", "Nvidia", "Realtek", "Synaptics", "AMD"
    If ($? -eq "True") {
       $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
@@ -397,12 +403,13 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     Write-Host "No UWP Apps found for this machines"
    }
    Write-Host -ForegroundColor Green "Searching for other apps for this machine"
-   $Software = Get-SoftpaqList -Category Software
-   foreach ($Record in $Software) {
-      iF ($Record.name -like "HP Programmable Key*") {
-	      $HPId = $Record.id
-	      $HPName = $Record.Name
-	      $HPVersion = $Record.version
+   $HPSoftPaq = Get-SoftpaqList -Category Software
+   foreach ($HPPaq in $HPSoftPaq) {
+      Forech ($app in $HPappnames)	
+         If ($HPPaq.name -like $app) {
+	      $HPId = $HPPaq.id
+	      $HPName = $HPPaq.Name
+	      $HPVersion = $HPPaq.version
 	      Write-Host -ForegroundColor Green "Downloading $HPid, $HPname with version $HPVersion"
 	      Get-Softpaq -Number $HPid.substring(2) -SaveAs "C:\Drivers\$HPId.exe" -Overwrite Yes
 	      Start-Process CMD.EXE -ArgumentList "/c $(C:\Drivers\$HPId.exe /s /f C:\Drivers\$HPid)" -Wait
