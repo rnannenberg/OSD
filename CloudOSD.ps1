@@ -8,6 +8,7 @@ $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version $Version"
 $OSDDEBUG = "False"
+
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
@@ -385,6 +386,7 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 
 # Setting names of extra HP SoftPaqs to install
 # Only installs softpaq if available for the machine type
+# Test new apps before change in production, some apps need diffent commandline!
 $HPappnames = @(
 "HP Programmable Key*"
 ) 
