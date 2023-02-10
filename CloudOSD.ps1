@@ -387,8 +387,6 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 # Only installs softpaq if available for the machine type
 $HPappnames = @(
 "HP Programmable Key*"
-"HP Power Manager*"
-"HP Connection Optimizer*"
 ) 
 
 If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
@@ -409,13 +407,13 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    $HPSoftPaq = Get-SoftpaqList
    foreach ($HPPaq in $HPSoftPaq) {
       foreach ($app in $HPappnames) {	
-         If ($app -like $HPPaq.name) {
+         If ($HPPaq.name -like $app) {
 	      $HPId = $HPPaq.id
 	      $HPName = $HPPaq.Name
 	      $HPVersion = $HPPaq.version
 	      Write-Host -ForegroundColor Green "Downloading $HPid, $HPname with version $HPVersion"
 	      Get-Softpaq -Number $HPid.substring(2) -SaveAs "C:\Drivers\$HPId.exe" -Overwrite Yes
-	      Start-Process CMD.EXE -ArgumentList "/c $(C:\Drivers\$HPId.exe /s /f C:\Drivers\$HPid)" -Wait
+	      Start-Process CMD.EXE -ArgumentList "/c C:\Drivers\$HPId.exe /s /f C:\Drivers\$HPid" -Wait
 	  }
       } 
    }
