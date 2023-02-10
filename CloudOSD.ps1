@@ -319,7 +319,7 @@ $OOBEvmTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding as
 #  Bios.ps1
 #================================================
 $OOBEBiosTasks = @'
-$Title = "Check Bios settings and setting things right"
+$Title = "Checking Bios settings and setting things right for Recovery"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
@@ -368,7 +368,7 @@ $OOBEBiosTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\bios.ps1' -Encodin
 #  WinPE PostOS
 #  appsuwp.ps1
 #================================================
-$OOBEUWPTasks = @'
+$OOBEAPPSTasks = @'
 $Title = "Downloading and Installing HP apps and UWP apps"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
@@ -406,7 +406,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
     Write-Host -ForegroundColor Yellow "No HP UWP Apps found for this machines"
    }
    Write-Host -ForegroundColor Green "Searching for other HP apps for this machine"
-   $HPSoftPaq = Get-SoftpaqList -Category Software
+   $HPSoftPaq = Get-SoftpaqList
    foreach ($HPPaq in $HPSoftPaq) {
       foreach ($app in $HPappnames) {	
          If ($HPPaq.name -like $app) {
@@ -423,9 +423,9 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
 Else {
    Write-Host -ForegroundColor Yellow "This is not a HP machine"
 }
-Start-Sleep -Seconds 300
+Start-Sleep -Seconds 5
 '@
-$OOBEUWPTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\appsuwp.ps1' -Encoding ascii -Force
+$OOBEAPPSTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\appsuwp.ps1' -Encoding ascii -Force
 
 #================================================
 #   WinPE PostOS
