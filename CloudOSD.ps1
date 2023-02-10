@@ -386,7 +386,7 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 
 # Setting names of extra HP SoftPaqs to install
 # Only installs softpaq if available for the machine type
-# Test new apps before change in production, some apps need diffent commandline!
+# Test new apps before change in production, some apps need different commandline!
 $HPappnames = @(
 "HP Programmable Key*"
 ) 
