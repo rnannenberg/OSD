@@ -386,6 +386,8 @@ $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 # Setting names of extra HP SoftPaqs to install
 $HPappnames = @(
 "HP Programmable Key*"
+"HP Power Manager*"
+"HP Connection Optimizer*"
 ) 
 
 If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
