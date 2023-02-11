@@ -432,7 +432,7 @@ $OOBEAPPSTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\appsuwp.ps1' -Enco
 #   oobe.ps1
 #================================================
 $OOBETasks = @'
-$Title = "OOBE installation/update phase"
+$Title = "OOBE Windows capabilities and update phase"
 $host.UI.RawUI.WindowTitle = $Title
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
