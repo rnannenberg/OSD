@@ -94,7 +94,7 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bi
 # Download and install the HP UWP and other supporting apps (disabled some unwanted things)
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\appsuwp.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
-start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
+# start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
 exit 
 '@
@@ -545,7 +545,7 @@ Start-Sleep -Seconds 5
 Clear-Host
 #Install Driver updates
 $ProgressPreference = 'Continue'
-Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
+Write-Host -ForegroundColor Green "Installing Drivers from Windows Update"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Drivers.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $driverupdates = Install-WindowsUpdate -UpdateType Driver -NotTitle "Preview" -AcceptAll -IgnoreReboot
@@ -553,7 +553,7 @@ $resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHead
 Start-Sleep -Seconds 5
 Clear-Host
 #Install Software updates
-Write-Host -ForegroundColor Green "Install Windows Updates"
+Write-Host -ForegroundColor Green "Installing Windows Updates"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Updates.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -NotTitle "Preview" -AcceptAll -IgnoreReboot
@@ -629,7 +629,7 @@ $body = ConvertTo-Json -Depth 4 @{
 )
 }
 Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType 'application/json' | Out-Null
-Write-Host -ForegroundColor Green "OOBE Installation and update phase ready, cleanup and the restarting in 30 seconds!"
+Write-Host -ForegroundColor Green "OOBE Installation ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 If ($OSDDEBUG -eq "False") {
    Remove-Item C:\Drivers -Force -Recurse | Out-Null
