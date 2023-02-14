@@ -400,7 +400,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    If ($? -eq "True") {
       $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
       Write-Host -ForegroundColor DarkGray "Installing HP UWP Apps - $($InstallScript.FullName)"
-      Start-Process CMD.EXE -ArgumentList "/c $($InstallScript.FullName)" -Wait
+      Start-Process CMD.EXE -ArgumentList "/c $($InstallScript.FullName)" -Wait -WindowStyle Minimized
    }
    Else {
     Write-Host -ForegroundColor Yellow "No HP UWP Apps found for this machines"
@@ -415,7 +415,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
 	      $HPVersion = $HPPaq.version
 	      Write-Host -ForegroundColor Green "Downloading $HPid, $HPname with version $HPVersion"
 	      Get-Softpaq -Number $HPid.substring(2) -SaveAs "C:\Drivers\$HPId.exe" -Overwrite Yes
-	      Start-Process CMD.EXE -ArgumentList "/c C:\Drivers\$HPId.exe /s /f C:\Drivers\$HPid" -Wait
+	      Start-Process CMD.EXE -ArgumentList "/c C:\Drivers\$HPId.exe /s /f C:\Drivers\$HPid" -Wait -WindowStyle Minimized
 	  }
       } 
    }
