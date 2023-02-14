@@ -67,7 +67,7 @@ if ($null -ne $wifilist -and $wifilist -like 'Profiles on interface Wi-Fi*') {
         }
     }
     Else {
-    	Write-Host -ForegroundColor Yellow "No WiFi networks to export, please keep machine connected to a networkcable during installation."
+    	Write-Host -ForegroundColor Yellow "No WiFi networks to export, please keep machine connected to a network cable during installation."
         Write-Host -ForegroundColor Yellow $wifilist
     }
 
@@ -181,7 +181,7 @@ $OOBEvcTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\VcRedist.ps1' -Encod
 #  wifi.ps1
 #================================================
 $OOBEWiFiTasks = @'
-$Title = "OOBE Add WiFi SSID's to the system if exist"
+$Title = "OOBE Add WiFi SSID's to the system if exports exist"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
