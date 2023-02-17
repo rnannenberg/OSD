@@ -473,6 +473,60 @@ Write-Host -ForegroundColor Green "Install PSWindowsUpdate Module"
 Install-Module PSWindowsUpdate -Force | Out-Null
 Start-Sleep -Seconds 5
 Clear-Host
+
+Write-Host -ForegroundColor Green "Settings Registry key's to disable some default Windows settings"
+Write-Host "Disable Edge Surf Game"
+$surf = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge"
+If (!(Test-Path $surf)) {
+    New-Item $surf
+}
+New-ItemProperty -Path $surf -Name 'AllowSurfGame' -Value 0 -PropertyType DWord
+Start-Sleep -Seconds 1
+
+#Disables Wi-fi Sense
+Write-Host "Disabling Wi-Fi Sense"
+$WifiSense1 = "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting"
+$WifiSense2 = "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots"
+$WifiSense3 = "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config"
+If (!(Test-Path $WifiSense1)) {
+   New-Item $WifiSense1
+}
+Set-ItemProperty $WifiSense1  Value -Value 0 
+If (!(Test-Path $WifiSense2)) {
+   New-Item $WifiSense2
+}
+Set-ItemProperty $WifiSense2  Value -Value 0 
+Set-ItemProperty $WifiSense3  AutoConnectAllowedOEM -Value 0 
+Write-Host -ForegroundColor Green "Windows Wi-Fi Sence Disabled"
+Start-Sleep -Seconds 1
+
+#Disabling Location Tracking
+Write-Host "Disabling Location Tracking"
+$SensorState = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}"
+$LocationConfig = "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration"
+If (!(Test-Path $SensorState)) {
+   New-Item $SensorState
+}
+Set-ItemProperty $SensorState SensorPermissionState -Value 0 
+If (!(Test-Path $LocationConfig)) {
+   New-Item $LocationConfig
+}
+Set-ItemProperty $LocationConfig Status -Value 0 
+
+# Disabled Chat and stopping it from comming back
+Write-Host "Disabling Teams Chat app and stopping it from comming back"
+$registryPath = "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Communications"
+If (!(Test-Path $registryPath)) { 
+    New-Item $registryPath
+}
+Set-ItemProperty $registryPath ConfigureChatAutoInstall -Value 0
+$registryPath = "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Chat"
+If (!(Test-Path $registryPath)) { 
+    New-Item $registryPath
+}
+Set-ItemProperty $registryPath "ChatIcon" -Value 2
+Start-Sleep -Seconds 5
+Clear-Host
 # Remove apps from system
 Write-Host -ForegroundColor Green "Remove Builtin Apps"
 # Create array to hold list of apps to remove 
@@ -483,10 +537,21 @@ $appname = @(
 "Microsoft.GamingApp"
 "Microsoft.GetHelp"
 "Microsoft.Getstarted"
+"Microsoft.Messaging"
+"Microsoft.Microsoft3DViewer"
 "Microsoft.MicrosoftOfficeHub"
 "Microsoft.MicrosoftSolitaireCollection"
+"Microsoft.NetworkSpeedTest"
+"Microsoft.MixedReality.Portal"
+"Microsoft.News"
+"Microsoft.Office.Lens"
+"Microsoft.Office.OneNote"
+"Microsoft.Office.Sway"
+"Microsoft.OneConnect"
 "Microsoft.People"
+"Microsoft.Print3D"
 "Microsoft.PowerAutomateDesktop"
+"Microsoft.SkypeApp"
 "Microsoft.Todos"
 "Microsoft.WindowsAlarm"
 "Microsoft.windowscommunicationsapps"
@@ -502,6 +567,7 @@ $appname = @(
 "Microsoft.ZuneVideo"
 "MicrosoftCorporationII.MicrosoftFamily"
 "MicrosoftCorporationII.QuickAssist"
+"MicrosoftTeams"
 ) 
 ForEach($app in $appname){
     try  {
