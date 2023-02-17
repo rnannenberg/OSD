@@ -497,7 +497,6 @@ If (!(Test-Path $WifiSense2)) {
 }
 Set-ItemProperty $WifiSense2  Value -Value 0 
 Set-ItemProperty $WifiSense3  AutoConnectAllowedOEM -Value 0 
-Write-Host -ForegroundColor Green "Windows Wi-Fi Sence Disabled"
 Start-Sleep -Seconds 1
 
 #Disabling Location Tracking
@@ -537,21 +536,10 @@ $appname = @(
 "Microsoft.GamingApp"
 "Microsoft.GetHelp"
 "Microsoft.Getstarted"
-"Microsoft.Messaging"
-"Microsoft.Microsoft3DViewer"
 "Microsoft.MicrosoftOfficeHub"
 "Microsoft.MicrosoftSolitaireCollection"
-"Microsoft.NetworkSpeedTest"
-"Microsoft.MixedReality.Portal"
-"Microsoft.News"
-"Microsoft.Office.Lens"
-"Microsoft.Office.OneNote"
-"Microsoft.Office.Sway"
-"Microsoft.OneConnect"
 "Microsoft.People"
-"Microsoft.Print3D"
 "Microsoft.PowerAutomateDesktop"
-"Microsoft.SkypeApp"
 "Microsoft.Todos"
 "Microsoft.WindowsAlarm"
 "Microsoft.windowscommunicationsapps"
