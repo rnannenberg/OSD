@@ -555,7 +555,6 @@ $appname = @(
 "Microsoft.ZuneVideo"
 "MicrosoftCorporationII.MicrosoftFamily"
 "MicrosoftCorporationII.QuickAssist"
-"MicrosoftTeams"
 ) 
 ForEach($app in $appname){
     try  {
