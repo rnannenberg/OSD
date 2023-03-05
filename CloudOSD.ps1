@@ -12,6 +12,11 @@ $OSDDEBUG = "False"
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
+
+$Started = "Started="
+$Started | Out-File X:\OSDCloud\preset.txt -append -NoNewLine
+$StartTime = (Get-Date) | Out-File X:\OSDCloud\preset.txt -append -NoNewLine
+
 #================================================
 #   Change the ErrorActionPreference
 #   to 'SilentlyContinue' Or 'Continue'
@@ -44,6 +49,17 @@ Start-Sleep -Seconds 5
 #   [OS] Start-OSDCloud with Params
 #================================================
 Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise -OSLanguage en-us -OSLicense Volume
+
+#================================================
+#   Collect Settings
+#================================================
+Copy-Item "X:\OSDCloud\preset.txt" "C:\OSDCloud\preset.txt" -Force
+$Versionvar = "Version="
+$Versionvar | Out-File c:\OSDCloud\set.txt -NoNewline
+$Version | Out-File c:\OSDCloud\set.txt -append
+$Started = "Started="
+$Started | Out-File c:\OSDCloud\set.txt -append -NoNewLine
+$StartTime = (Get-Date) | Out-File c:\OSDCloud\set.txt -append -NoNewLine
 
 #================================================
 #   [OS] Check for WinPE WiFi and export profiles
@@ -93,6 +109,8 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VM
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bios.ps1
 # Download and install the HP UWP and other supporting apps (disabled some unwanted things)
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\appsuwp.ps1
+# Download and Install Microsoft 365
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\m365.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
 # start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
@@ -314,6 +332,31 @@ If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
 Start-Sleep -Seconds 5
 '@
 $OOBEvmTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\vm.ps1' -Encoding ascii -Force
+
+#================================================
+#  WinPE PostOS 
+#  m365.ps1
+#================================================
+$OOBEm365Tasks = @'
+$Title = "OOBE Microsoft 365 Download and install"
+$host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
+$WarningPreference = 'SilentlyContinue'
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
+write-host "M365 Download and install" -ForegroundColor Green
+$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-M365.log"
+$null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
+$env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
+$env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
+$Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
+$env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+#new-item -ItemType Directory -Path "C:\OSDCloud\O365"
+Install-Script -Name Install-Office365Suite -force
+Install-Office365Suite.ps1 -OfficeInstallDownloadPath "C:\OSDCloud\O365" -OfficeArch 64 -Channel MonthlyEnterprise -LanguageIDs en-us,nl-nl -AcceptEULA TRUE
+'@
+$OOBEm365Tasks | Out-File -FilePath 'C:\Windows\Setup\scripts\m365.ps1' -Encoding ascii -Force
 
 #================================================
 #  WinPE PostOS
@@ -614,9 +657,50 @@ $resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTable
 $ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 5
 Clear-Host
+
 #Sending Teams message about installion
 Write-Host -ForegroundColor Green "Sending Teams message about installation"
 $URI = 'https://dnbnl.webhook.office.com/webhookb2/1aed7abf-4fcd-4c7b-aa48-bfb0cc71e010@9ecbd628-0072-405d-8567-32c6750b0d3e/IncomingWebhook/fc1ec9581d914a3087f5d0bf49c14934/ead7a441-7e2e-4cdc-9a42-24b53af16bb4'
+
+# Read inputfile
+$Pathset = "c:\OSDCloud\set.txt"
+$waardesset = Get-Content $Pathset | Out-String | ConvertFrom-StringData 
+$verset = $waardesset.Version 
+$startset = $waardesset.started
+$SSIDset = (Get-NetConnectionProfile).Name
+$Pathpreset = "c:\OSDCloud\preset.txt"
+$waardespreset = Get-Content $Pathpreset | Out-String | ConvertFrom-StringData 
+$startpreset = $waardespreset.started
+$Endime = (Get-Date)
+$TimeSpan = New-TimeSpan -Start $startpreset -End $Endime
+$Timecompleted = $TimeSpan.ToString("mm' minutes 'ss' seconds'")
+$Working_path = "C:\OSDCloud\OS"
+$file_version = @(Get-ChildItem $Working_Path\* -include *.esd)
+$winversion = $file_version.name -replace ".{4}$"
+$psversion = $PSVersionTable.PSVersion
+$paths = @(
+	"HKLM:\SOFTWARE\Microsoft\Office\ClickToRun",
+	"HKLM:\SOFTWARE\WOW6432Node\Microsoft\Office\ClickToRun"
+)
+$officeVersion = ""
+foreach ($path in $paths)
+{
+	if (Test-Path -Path "$path\Configuration")
+	{
+		$officeVersion = (Get-ItemProperty -Path "$path\Configuration" -Name "VersionToReport").VersionToReport
+	}
+}
+$content = Invoke-RestMethod -Uri "https://docs.microsoft.com/en-us/officeupdates/update-history-office365-proplus-by-date" -Method Get
+$build = [Version]"$officeVersion"
+$content -match "<a href=`"(?<Channel>.+?)`".+?>Version (?<Version>\d{4}) \(Build $($build.Build)\.$($build.Revision)\)"
+$output = [PSCustomObject]@{
+	Build   = $build
+	Version = $Matches['Version']
+	Channel = ($Matches['Channel'] -split "#")[0]
+}
+$office = 'Microsoft 365 Apps for enterprise Version ' + $output.Version + ' Build ' + $output.Build + ' ' + $output.Channel
+$VClist = (Get-InstalledVcRedist).Name
+$VClistsplit = $VClist | foreach {$_ +  "<br/>"}
 $BiosSerialNumber = Get-MyBiosSerialNumber
 $ComputerManufacturer = Get-MyComputerManufacturer
 $ComputerModel = Get-MyComputerModel
@@ -631,12 +715,20 @@ $body = ConvertTo-Json -Depth 4 @{
    text   = " "
    sections = @(
    @{
-     activityTitle    = 'OS Cloud Installation and Recovery Windows 11'
+     activityTitle    = 'OS Cloud Installation'
      activitySubtitle = 'OS Deployment'
    },
    @{
      title = '<h2 style=color:blue;>Deployment Details'
      facts = @(
+       @{
+         name  = 'OSD Cloud version'
+         value = $verset
+       },
+       @{
+         name  = 'Completed'
+         value = $Timecompleted
+       },
        @{
          name  = 'BIOS Serial'
          value = $BiosSerialNumber
@@ -649,6 +741,10 @@ $body = ConvertTo-Json -Depth 4 @{
          name  = 'Computer Model'
          value = "$ComputerModel"
        },
+        @{
+         name  = 'SSID'
+         value = $SSIDset
+       },       
         @{
          name  = 'Private IP Address'
          value = $IPAddress
@@ -670,18 +766,35 @@ $body = ConvertTo-Json -Depth 4 @{
          value = $org
        },
         @{
+         name  = 'Windows Image Version'
+         value = $winversion
+       },         
+        @{
+         name  = 'Powershell Version'
+         value = $psversion
+       },  
+        @{
+         name  = 'Office Version'
+         value = $office
+       },   
+        @{
+         name  = 'Visual C++ Versions'
+         value = $VClistsplit
+       },           
+        @{
          name  = 'Sofware Updates'
-         value = $resultsoftwareupdates
+         value = $resultsoftwareupdatessplit
        },        
        @{
          name  = 'Driver Updates'
-         value = $resultdriverupdates
+         value = $resultdriverupdatessplit
        }
      )
    }
 )
 }
 Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType 'application/json' | Out-Null
+
 Write-Host -ForegroundColor Green "OOBE Installation ready, cleanup and the restarting in 30 seconds!"
 Start-Sleep -Seconds 30
 If ($OSDDEBUG -eq "False") {
