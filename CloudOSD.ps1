@@ -639,21 +639,32 @@ foreach ($Item in $Result) {
 }
 Start-Sleep -Seconds 5
 Clear-Host
+
 #Install Driver updates
 $ProgressPreference = 'Continue'
-Write-Host -ForegroundColor Green "Installing Drivers from Windows Update"
+Write-Host -ForegroundColor Green "Install Drivers from Windows Update"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Drivers.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
-$driverupdates = Install-WindowsUpdate -UpdateType Driver -NotTitle "Preview" -AcceptAll -IgnoreReboot
-$resultdriverupdates = $driverupdates | Format-Table Result,Title -HideTableHeaders | Out-String
+$driverupdates = Install-WindowsUpdate -UpdateType Driver -NotTitle "Preview" -AcceptAll -IgnoreReboot | Out-File "c:\OSDCloud\DriverUpdate.log" -force
+$Pathsetdri = "c:\OSDCloud\DriverUpdate.log"
+(gc $Pathsetdri) | ? {$_.trim() -ne "" } | set-content $Pathsetdri
+$waardesset1 = Get-Content $Pathsetdri |  Select-String -Pattern 'Installed' 
+$upd2 = $waardesset1 -replace "^.*MB " | Foreach {$_.TrimEnd()}
+$resultdriverupdatessplit = $upd2 | foreach {$_ +  "<br/>"}
 Start-Sleep -Seconds 5
 Clear-Host
+
 #Install Software updates
-Write-Host -ForegroundColor Green "Installing Windows Updates"
+Write-Host -ForegroundColor Green "Install Windows Updates"
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Updates.log"
 Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
-$softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -NotTitle "Preview" -AcceptAll -IgnoreReboot
-$resultsoftwareupdates = $softwareupdates | Format-Table Result,Title -HideTableHeaders | Out-String
+$softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -NotTitle "Preview" -AcceptAll -IgnoreReboot | Out-File "c:\OSDCloud\WindowsUpdate.log" -force
+$Pathsetupd = "c:\OSDCloud\WindowsUpdate.log"
+(gc $Pathsetupd) | ? {$_.trim() -ne "" } | set-content $Pathsetupd
+$waardesset = Get-Content $Pathsetupd |  Select-String -Pattern 'Installed' | Sort-Object | Get-Unique
+$upd3 = $waardesset -replace "^.*Installed " | Foreach {$_.TrimEnd()}
+$upd3 -replace '(?<=^.{94}).*'
+$resultsoftwareupdatessplit = $upd3 | foreach {$_ +  "<br/>"}
 $ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 5
 Clear-Host
