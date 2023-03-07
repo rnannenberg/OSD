@@ -648,9 +648,10 @@ Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $driverupdates = Install-WindowsUpdate -UpdateType Driver -NotTitle "Preview" -AcceptAll -IgnoreReboot | Out-File "c:\OSDCloud\DriverUpdate.log" -force
 $Pathsetdri = "c:\OSDCloud\DriverUpdate.log"
 (gc $Pathsetdri) | ? {$_.trim() -ne "" } | set-content $Pathsetdri
-$waardesset1 = Get-Content $Pathsetdri |  Select-String -Pattern 'Installed' 
-$upd2 = $waardesset1 -replace "^.*MB " | Foreach {$_.TrimEnd()}
-$resultdriverupdatessplit = $upd2 | foreach {$_ +  "<br/>"}
+$waardesset1 = Get-Content $Pathsetdri | Select-String -Pattern 'Installed'
+$upd2 = $waardesset1 -replace "(?m)^.{43}" 
+$resultdriverupdatessplit = $upd2| foreach {$_ +  "<br/>"}
+$ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 5
 Clear-Host
 
@@ -661,9 +662,8 @@ Add-WUServiceManager -MicrosoftUpdate -Confirm:$false | Out-Null
 $softwareupdates = Install-WindowsUpdate -MicrosoftUpdate -NotTitle "Preview" -AcceptAll -IgnoreReboot | Out-File "c:\OSDCloud\WindowsUpdate.log" -force
 $Pathsetupd = "c:\OSDCloud\WindowsUpdate.log"
 (gc $Pathsetupd) | ? {$_.trim() -ne "" } | set-content $Pathsetupd
-$waardesset = Get-Content $Pathsetupd |  Select-String -Pattern 'Installed' | Sort-Object | Get-Unique
-$upd3 = $waardesset -replace "^.*Installed " | Foreach {$_.TrimEnd()}
-$upd3 -replace '(?<=^.{94}).*'
+$waardesset = Get-Content $Pathsetupd| Select-String -Pattern 'Installed'
+$upd3 = $waardesset -replace "(?m)^.{43}" 
 $resultsoftwareupdatessplit = $upd3 | foreach {$_ +  "<br/>"}
 $ProgressPreference = 'SilentlyContinue'
 Start-Sleep -Seconds 5
@@ -688,7 +688,11 @@ $Timecompleted = $TimeSpan.ToString("mm' minutes 'ss' seconds'")
 $Working_path = "C:\OSDCloud\OS"
 $file_version = @(Get-ChildItem $Working_Path\* -include *.esd)
 $winversion = $file_version.name -replace ".{4}$"
+Working_path_drv= "C:\Drivers"
+$drv_version = @(Get-ChildItem $Working_Path_drv\* -include *.msi)
+$drvpack = $drv_version.name -replace ".{4}$"
 $psversion = $PSVersionTable.PSVersion
+$dotnetversion =  (Get-Item C:\Windows\Temp\windowsdesktop-runtime-win-x64.exe).VersionInfo.FileVersion
 $paths = @(
 	"HKLM:\SOFTWARE\Microsoft\Office\ClickToRun",
 	"HKLM:\SOFTWARE\WOW6432Node\Microsoft\Office\ClickToRun"
@@ -785,13 +789,21 @@ $body = ConvertTo-Json -Depth 4 @{
          value = $psversion
        },  
         @{
+         name  = '.NET 7 Version'
+         value = $dotnetversion
+       },       
+        @{
          name  = 'Office Version'
          value = $office
        },   
         @{
          name  = 'Visual C++ Versions'
          value = $VClistsplit
-       },           
+       }, 
+        @{
+         name  = 'Driver Pack'
+         value = $drvpack 
+       },
         @{
          name  = 'Sofware Updates'
          value = $resultsoftwareupdatessplit
