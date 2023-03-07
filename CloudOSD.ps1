@@ -637,6 +637,9 @@ foreach ($Item in $Result) {
         $Item | Add-WindowsCapability -Online -ErrorAction Ignore | Out-Null
     }
 }
+#disable Powershell 2.0 - Powershell 2.0 is no longer blocked when .NET 3.5 is installed. Powershell 2 is security risk and will be disabled
+Write-Host -ForegroundColor Green "Powershell 2.0 is no longer blocked when .NET 3.5 is installed. Powershell 2 is security risk and will be disabled"
+Disable-WindowsOptionalFeature -Online -FeatureName "MicrosoftWindowsPowerShellV2Root"
 Start-Sleep -Seconds 5
 Clear-Host
 
