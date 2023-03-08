@@ -7,7 +7,7 @@ $Version = "1.5"
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version $Version"
-$OSDDEBUG = "True"
+$OSDDEBUG = "False"
 
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
@@ -483,7 +483,7 @@ $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-OOBE.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 write-host "Powershell Version: "$PSVersionTable.PSVersion -ForegroundColor Green
 $OOBESHIFTF10 = "False"
-$OSDDEBUG = "True"
+$OSDDEBUG = "False"
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
@@ -639,7 +639,7 @@ foreach ($Item in $Result) {
 }
 #disable Powershell 2.0 - Powershell 2.0 is no longer blocked when .NET 3.5 is installed. Powershell 2 is security risk and will be disabled
 Write-Host -ForegroundColor Green "Powershell 2.0 is no longer blocked when .NET 3.5 is installed. Powershell 2 is security risk and will be disabled"
-Disable-WindowsOptionalFeature -Online -FeatureName "MicrosoftWindowsPowerShellV2Root"
+Disable-WindowsOptionalFeature -Online -FeatureName "MicrosoftWindowsPowerShellV2Root" | Out-Null
 Start-Sleep -Seconds 5
 Clear-Host
 
