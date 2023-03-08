@@ -352,9 +352,22 @@ $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
 $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
-#new-item -ItemType Directory -Path "C:\OSDCloud\O365"
-Install-Script -Name Install-Office365Suite -force
-Install-Office365Suite.ps1 -OfficeInstallDownloadPath "C:\OSDCloud\O365" -OfficeArch 64 -Channel MonthlyEnterprise -LanguageIDs en-us,nl-nl -AcceptEULA TRUE
+Install-Script -Name Install-Office365Suite -force | Out-Null
+#Install-Office365Suite.ps1 -OfficeInstallDownloadPath "C:\OSDCloud\O365" -OfficeArch 64 -Channel MonthlyEnterprise -LanguageIDs en-us,nl-nl -AcceptEULA TRUE
+$job = Start-Job -ScriptBlock {Invoke-Expression "&Install-Office365Suite.ps1 -OfficeInstallDownloadPath "C:\OSDCloud\O365" -OfficeArch 64 -Channel MonthlyEnterprise -LanguageIDs en-us,nl-nl -AcceptEULA TRUE"}
+if($job |Wait-Job -Timeout 300) {
+  if($job.State -eq 'Completed') {
+     Write-Host "Microsoft 365 Monthly Enterprise installed" -ForegroundColor Green
+     Start-Sleep -Seconds 5       
+  }
+  else {
+     Write-Host -ForegroundColor Red "Oops, something went wrong!"
+     Write-Host -ForegroundColor Red "The error was: $job.State"
+     Write-Host -ForegroundColor Red "Lets reboot and try again!"
+     Start-Sleep -Seconds 10
+     Restart-Computer -Force    
+  }
+}
 '@
 $OOBEm365Tasks | Out-File -FilePath 'C:\Windows\Setup\scripts\m365.ps1' -Encoding ascii -Force
 
