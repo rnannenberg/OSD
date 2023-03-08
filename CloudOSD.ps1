@@ -354,7 +354,7 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Script -Name Install-Office365Suite -force | Out-Null
 #Install-Office365Suite.ps1 -OfficeInstallDownloadPath "C:\OSDCloud\O365" -OfficeArch 64 -Channel MonthlyEnterprise -LanguageIDs en-us,nl-nl -AcceptEULA TRUE
-$job = Start-Job -ScriptBlock {Invoke-Expression "&Install-Office365Suite.ps1 -OfficeInstallDownloadPath "C:\OSDCloud\O365" -OfficeArch 64 -Channel MonthlyEnterprise -LanguageIDs en-us,nl-nl -AcceptEULA TRUE"}
+$job = Start-Job -ScriptBlock {Invoke-Expression "&Install-Office365Suite.ps1 -OfficeInstallDownloadPath C:\OSDCloud\O365 -OfficeArch 64 -Channel MonthlyEnterprise -LanguageIDs en-us,nl-nl -AcceptEULA TRUE"}
 if($job |Wait-Job -Timeout 300) {
   if($job.State -eq 'Completed') {
      Write-Host "Microsoft 365 Monthly Enterprise installed" -ForegroundColor Green
