@@ -790,6 +790,10 @@ $body = ConvertTo-Json -Depth 4 @{
          value = $verset
        },
        @{
+         name  = 'USB Drive Owner'
+         value = $usbownerpreset
+       },   
+       @{
          name  = 'Completed'
          value = $Timecompleted
        },
