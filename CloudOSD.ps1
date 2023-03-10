@@ -46,10 +46,6 @@ If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
 }
 
-$Started = "Started="
-$Started | Out-File X:\OSDCloud\preset.txt -append -NoNewLine
-$StartTime = (Get-Date) | Out-File X:\OSDCloud\preset.txt -append -NoNewLine
-
 #================================================
 #   Change the ErrorActionPreference
 #   to 'SilentlyContinue' Or 'Continue'
