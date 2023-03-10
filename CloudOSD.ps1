@@ -18,6 +18,7 @@ $allowedremovables = @(
 [PSCustomObject]@{Name = 'Ron Nannenberg (1)'; USBID = "USBSTOR\DISK&VEN__USB&PROD__SANDISK_3.2GEN1&REV_1.00\04018EB2A7DABC550D43D5DE84165AE65E120D043D76F411C7D59FE0290F25A"}
 [PSCustomObject]@{Name = 'Ron Nannenberg (2)'; USBID = "USBSTOR\DISK&VEN_KINGSTON&PROD_DATATRAVELER_3.0&REV_PMAP\60A44C3FAD9EEEA0298E0011&0"}
 )
+
 $USBOwner = "USBOwner="
 $USBOwner | Out-File X:\OSDCloud\preset.txt -NoNewLine
 $USBOwneruse = $allowedremovables.Where{$_.USBID -eq $currentremovable}.Name | Out-File X:\OSDCloud\preset.txt -append 
