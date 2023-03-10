@@ -28,12 +28,13 @@ $Started | Out-File X:\OSDCloud\preset.txt -append -NoNewLine
 $StartTime = (Get-Date) | Out-File X:\OSDCloud\preset.txt -append -NoNewLine 
 
 if ($allowedremovables.USBID | Where-Object {$currentremovable -eq $_ -or $currentremovable -eq "F11 Recovery"}) {
-Write-Output "known USB device:" $allowedremovables.Where{$_.USBID -eq $currentremovable}.Name
+   Write-Output "known USB device:" $allowedremovables.Where{$_.USBID -eq $currentremovable}.Name
 }
 Else {
-Write-Output "Unknown USB device and exit"
-Start-Sleep -Seconds 5
-Restart-Computer
+   Write-Output "Unknown USB device and exit"
+   Start-Sleep -Seconds 5
+   Restart-Computer
+   exit 1
 }
 
 #================================================
