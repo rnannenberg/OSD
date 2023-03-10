@@ -1,8 +1,40 @@
+<#.DESCRIPTION
+.NOTES
+Author: Ron Nannenberg
+OSDCloud Task Sequence
+History:
+1.6 - 10-03-2023 - Exit unknown USB disks and if no USB F11 is used
+#>
+$Version = "1.6"
 #================================================
-#   OSDCloud Task Sequence
-#   Windows 11 22H2 Enterprise us Volume
-#   No Autopilot
-$Version = "1.5"
+# checking if F11 or known USB
+#================================================
+$currentremovable = (gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Where-Object {($_.PNPDeviceID -like '*disk*')}).DeviceID
+If ([String]::IsNullOrEmpty($currentremovable)) {
+   $currentremovable = "F11 Recovery"
+|
+$allowedremovables = @(
+[PSCustomObject]@{Name = 'F11 Recovery'; USBID = "F11 Recovery"}
+[PSCustomObject]@{Name = 'Ron Nannenberg (1)'; USBID = "USBSTOR\DISK&VEN__USB&PROD__SANDISK_3.2GEN1&REV_1.00\04018EB2A7DABC550D43D5DE84165AE65E120D043D76F411C7D59FE0290F25A"}
+[PSCustomObject]@{Name = 'Ron Nannenberg (2)'; USBID = "USBSTOR\DISK&VEN_KINGSTON&PROD_DATATRAVELER_3.0&REV_PMAP\60A44C3FAD9EEEA0298E0011&0"}
+)
+$USBOwner = "USBOwner="
+$USBOwner | Out-File X:\OSDCloud\preset.txt -NoNewLine
+$USBOwneruse = $allowedremovables.Where{$_.USBID -eq $currentremovable}.Name | Out-File X:\OSDCloud\preset.txt -append 
+
+$Started = "Started="
+$Started | Out-File X:\OSDCloud\preset.txt -append -NoNewLine
+$StartTime = (Get-Date) | Out-File X:\OSDCloud\preset.txt -append -NoNewLine 
+
+if ($allowedremovables.USBID | Where-Object {$currentremovable -eq $_ -or $currentremovable -eq "F11 Recovery"}) {
+Write-Output "known USB device:" $allowedremovables.Where{$_.USBID -eq $currentremovable}.Name
+}
+Else {
+Write-Output "Unknown USB device and exit"
+Start-Sleep -Seconds 5
+Restart-Computer
+}
+
 #================================================
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
