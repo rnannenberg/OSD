@@ -12,7 +12,7 @@ $Version = "1.6"
 $currentremovable = (gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Where-Object {($_.PNPDeviceID -like '*disk*')}).DeviceID
 If ([String]::IsNullOrEmpty($currentremovable)) {
    $currentremovable = "F11 Recovery"
-|
+}
 $allowedremovables = @(
 [PSCustomObject]@{Name = 'F11 Recovery'; USBID = "F11 Recovery"}
 [PSCustomObject]@{Name = 'Ron Nannenberg (1)'; USBID = "USBSTOR\DISK&VEN__USB&PROD__SANDISK_3.2GEN1&REV_1.00\04018EB2A7DABC550D43D5DE84165AE65E120D043D76F411C7D59FE0290F25A"}
