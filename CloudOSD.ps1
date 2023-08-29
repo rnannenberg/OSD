@@ -281,7 +281,7 @@ $OOBEWiFiTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\wifi.ps1' -Encodin
 #  net6.ps1
 #================================================
 $OOBEnetTasks = @'
-$Title = "OOBE Latest .Net Framework 6.0 Download and install"
+$Title = "OOBE Latest .Net Framework 6 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
@@ -306,7 +306,7 @@ if($job |Wait-Job -Timeout 300) {
      write-host "Installing"
      $params = "/install /passive /norestart"
      Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\windowsdesktop6-runtime-win-x64.exe" -ArgumentList $params
-     Write-Host "Latest .Net 6 Framework is installed" -ForegroundColor Green
+     Write-Host "Latest .Net Framework 6 is installed" -ForegroundColor Green
      Start-Sleep -Seconds 5       
   }
   else {
@@ -325,7 +325,7 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net6.ps1' -Encoding
 #  net7.ps1
 #================================================
 $OOBEnetTasks = @'
-$Title = "OOBE Latest .Net Framework Download and install"
+$Title = "OOBE Latest .Net Framework 7 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
@@ -350,7 +350,7 @@ if($job |Wait-Job -Timeout 300) {
      write-host "Installing"
      $params = "/install /passive /norestart"
      Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\windowsdesktop7-runtime-win-x64.exe" -ArgumentList $params
-     Write-Host "Latest .Net 7 Framework is installed" -ForegroundColor Green
+     Write-Host "Latest .Net Framework 7 is installed" -ForegroundColor Green
      Start-Sleep -Seconds 5       
   }
   else {
