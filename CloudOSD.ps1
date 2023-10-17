@@ -142,7 +142,9 @@ start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\bi
 # Download and install the HP UWP and other supporting apps (disabled some unwanted things)
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\appsuwp.ps1
 # Download and Install Microsoft 365
-# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\m365.ps1
+#start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\m365.ps1
+# Download and Install New Teams
+#start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\scripts\teams.ps1
 # Below a PS 7 session for debug and testing in system context, # when not needed 
 # start /wait pwsh.exe -NoL -ExecutionPolicy Bypass
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\oobe.ps1
@@ -463,6 +465,41 @@ if($job |Wait-Job -Timeout 300) {
 }
 '@
 $OOBEm365Tasks | Out-File -FilePath 'C:\Windows\Setup\scripts\m365.ps1' -Encoding ascii -Force
+
+#================================================
+#  WinPE PostOS 
+#  teams.ps1
+#================================================
+$OOBENewTeamsTasks = @'
+$Title = "OOBE New Teams Download and install"
+$host.UI.RawUI.WindowTitle = $Title
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = "SilentlyContinue"
+$WarningPreference = 'SilentlyContinue'
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
+
+write-host "New Teams Download and install" -ForegroundColor Green
+$Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-teams.log"
+$null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
+$env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
+$env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
+$Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
+$env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
+
+    $url = "https://go.microsoft.com/fwlink/?linkid=2243204&clcid=0x409"
+    write-host "Downloading and installing $url"
+    Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\teamsbootstrapper.exe"
+    $params = "-p"
+    Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\teamsbootstrapper.exe" -ArgumentList $params
+    Execute-Process -Path "$dirFiles\teamsbootstrapper.exe" -Parameters '-p' -WindowStyle 'Hidden'
+
+
+Write-Host "New Teams Latest installed" -ForegroundColor Green
+Start-Sleep -Seconds 5
+
+'@
+$OOBENewTeamsTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\teams.ps1' -Encoding ascii -Force
 
 #================================================
 #  WinPE PostOS
