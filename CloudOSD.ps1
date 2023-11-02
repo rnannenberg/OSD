@@ -582,8 +582,7 @@ If ((Get-CimInstance -ClassName Win32_BIOS).Manufacturer -eq "HP") {
    Install-Module -Name HPCMSL -Force -AcceptLicense | Out-Null
    if (!(Test-Path -Path "c:\drivers\uwp\")){New-Item -Path "c:\drivers\uwp\" -ItemType Directory -Force | Out-Null}
    Write-Host -ForegroundColor Green "Downloading HP UWP Apps for this machine"
-   # New-HPUWPDriverPack -Path "c:\drivers\uwp\" -UnselectList "Intel", "Nvidia", "Realtek", "Synaptics", "AMD"
-   New-HPUWPDriverPack -Path "c:\drivers\uwp\" -UnselectList "Nvidia", "Synaptics", "AMD"
+   New-HPUWPDriverPack -Path "c:\drivers\uwp\" -UnselectList "Intel", "Nvidia", "Realtek", "Synaptics", "AMD"
    If ($? -eq "True") {
       $InstallScript = Get-ChildItem -Path "c:\drivers\uwp\" -Filter InstallAllApps.cmd -Recurse
       Write-Host -ForegroundColor DarkGray "Installing HP UWP Apps - $($InstallScript.FullName)"
