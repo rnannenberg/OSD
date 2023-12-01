@@ -78,9 +78,9 @@ Start-Sleep -Seconds 5
 #================================================
 #   [OS] Start-OSDCloud with Params
 #================================================
-Start-OSDCloud -ZTI -OSName 'Windows 11 23H2 x64' -OSLanguage en-us -OSEdition Enterprise  -OSActivation Volume
+#Start-OSDCloud -ZTI -OSName 'Windows 11 23H2 x64' -OSLanguage en-us -OSEdition Enterprise  -OSActivation Volume
 #Start-OSDCloud -ZTI -OSName 'Windows 11 22H2 x64' -OSLanguage en-us -OSEdition Enterprise  -OSActivation Volume
-#Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise -OSLanguage en-us -OSLicense Volume
+Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise -OSLanguage en-us -OSLicense Volume
 #================================================
 #   Collect Settings
 #================================================
@@ -97,7 +97,7 @@ $StartTime = (Get-Date) | Out-File c:\OSDCloud\set.txt -append -NoNewLine
 #================================================ 
 $XmlDirectory = "C:\Windows\Setup\Scripts"
 $wifilist = $(netsh.exe wlan show profiles)
-Install-Module -Name VcRedist -Force | Out-Null
+#Install-Module -Name VcRedist -Force | Out-Null
 write-host "Searching for WiFi Networks configured during WinRE phase" -ForegroundColor Green
 if ($null -ne $wifilist -and $wifilist -like 'Profiles on interface Wi-Fi*') {
     $ListOfSSID = ($wifilist | Select-string -pattern "\w*All User Profile.*: (.*)" -allmatches).Matches | ForEach-Object {$_.Groups[1].Value}
