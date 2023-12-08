@@ -132,8 +132,8 @@ Start-Sleep -Seconds 10
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
 # Download and Install .Net Framework 6 X86 & X64
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net6.ps1
-# Download and Install .Net Framework 7
-# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net7.ps1
+# Download and Install .Net Framework 8 X86 & X64
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net8.ps1
 # VcRedist Download and install supported versions
 start /wait pwsh.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\VcRedist.ps1
 # Check IF VM and install things
@@ -343,20 +343,20 @@ $OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net6.ps1' -Encoding
 
 #================================================
 #  WinPE PostOS
-#  net7.ps1
+#  net8.ps1
 #================================================
 $OOBEnetTasks = @'
-$Title = "OOBE Latest .Net Framework 7 Download and install"
+$Title = "OOBE Latest .Net Framework 8 X86 & X64 Download and install"
 $host.UI.RawUI.WindowTitle = $Title
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = "SilentlyContinue"
 $WarningPreference = 'SilentlyContinue'
 #Change URL and exe in code if new version is necessary
-#windowsdesktop-runtime-win-x64.exe
-#https://aka.ms/dotnet/7.0/windowsdesktop-runtime-win-x64.exe
+#https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe
+#https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x86.exe
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
-Write-Host ".Net Framework 7 Download and install" -ForegroundColor Green
+Write-Host ".Net Framework 6 Download and install" -ForegroundColor Green
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Framework.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
@@ -364,14 +364,32 @@ $env:LOCALAPPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Local"
 $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scripts"
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name PowerShellGet -Force | Out-Null
-write-host "Downloading latest version"
-$job = Start-Job -ScriptBlock {Invoke-WebRequest -Uri https://aka.ms/dotnet/7.0/windowsdesktop-runtime-win-x64.exe -OutFile "C:\Windows\Temp\windowsdesktop7-runtime-win-x64.exe"}
+write-host "Downloading latest X86 version"
+$job = Start-Job -ScriptBlock {Invoke-WebRequest -Uri https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x86.exe -OutFile "C:\Windows\Temp\windowsdesktop8-runtime-win-x86.exe"}
 if($job |Wait-Job -Timeout 300) {
   if($job.State -eq 'Completed') {
      write-host "Installing"
      $params = "/install /passive /norestart"
-     Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\windowsdesktop7-runtime-win-x64.exe" -ArgumentList $params
-     Write-Host "Latest .Net Framework 7 is installed" -ForegroundColor Green
+     Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\windowsdesktop8-runtime-win-x86.exe" -ArgumentList $params
+     Write-Host "Latest .Net Framework 8 X86 is installed" -ForegroundColor Green
+     Start-Sleep -Seconds 5       
+  }
+  else {
+     Write-Host -ForegroundColor Red "Oops, something went wrong!"
+     Write-Host -ForegroundColor Red "The error was: $job.State"
+     Write-Host -ForegroundColor Red "Lets reboot and try again!"
+     Start-Sleep -Seconds 10
+     Restart-Computer -Force    
+  }
+}
+write-host "Downloading latest X64 version"
+$job = Start-Job -ScriptBlock {Invoke-WebRequest -Uri https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe -OutFile "C:\Windows\Temp\windowsdesktop8-runtime-win-x64.exe"}
+if($job |Wait-Job -Timeout 300) {
+  if($job.State -eq 'Completed') {
+     write-host "Installing"
+     $params = "/install /passive /norestart"
+     Start-Process -Wait -NoNewWindow -FilePath "C:\Windows\Temp\windowsdesktop8-runtime-win-x64.exe" -ArgumentList $params
+     Write-Host "Latest .Net Framework 8 X64 is installed" -ForegroundColor Green
      Start-Sleep -Seconds 5       
   }
   else {
@@ -383,7 +401,7 @@ if($job |Wait-Job -Timeout 300) {
   }
 }
 '@
-$OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net7.ps1' -Encoding ascii -Force
+$OOBEnetTasks | Out-File -FilePath 'C:\Windows\Setup\scripts\net8.ps1' -Encoding ascii -Force
 
 #================================================
 #  WinPE PostOS
