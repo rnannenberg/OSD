@@ -4,8 +4,9 @@ Author: Ron Nannenberg
 OSDCloud Task Sequence
 History:
 1.6 - 10-03-2023 - Exit unknown USB disks and if no USB F11 is used
+1.7 - 08-12-2023 - >.NET Framework 8 X86 en X64
 #>
-$Version = "1.6"
+$Version = "1.7"
 #================================================
 # checking if F11 or known USB
 #================================================
