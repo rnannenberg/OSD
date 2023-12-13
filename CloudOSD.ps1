@@ -79,8 +79,8 @@ Start-Sleep -Seconds 5
 #================================================
 #   [OS] Start-OSDCloud with Params
 #================================================
-#Start-OSDCloud -ZTI -OSName 'Windows 11 23H2 x64' -OSLanguage en-us -OSEdition Enterprise  -OSActivation Volume
-Start-OSDCloud -ZTI -OSName 'Windows 11 22H2 x64' -OSLanguage en-us -OSEdition Enterprise  -OSActivation Volume
+Start-OSDCloud -ZTI -OSName 'Windows 11 23H2 x64' -OSLanguage en-us -OSEdition Enterprise  -OSActivation Volume
+#Start-OSDCloud -ZTI -OSName 'Windows 11 22H2 x64' -OSLanguage en-us -OSEdition Enterprise  -OSActivation Volume
 #Start-OSDCloud -ZTI -OSVersion 'Windows 11' -OSBuild 22H2 -OSEdition Enterprise -OSLanguage en-us -OSLicense Volume
 #================================================
 #   Collect Settings
