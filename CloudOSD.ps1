@@ -437,7 +437,7 @@ If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     #remove the whitespace and split on the assignment operator, then split on the double quote and select the correct item
     $filename = (($interestingLine.Replace(" ","").Split("=") | Select-string -Pattern $pattern).ToString().Trim().Split("`""))[1]
  
-    $url = "https://packages.vmware.com/tools/esx/latest/windows/x64/$($filename)"
+    $url = "https://packages.vmware.com/tools/releases/latest/windows/x64/$($filename)"
     write-host "Downloading and installing $url"
     Invoke-WebRequest -Uri $url -OutFile "C:\Windows\Temp\$filename"
     $params = "/S /v /qn REBOOT=R ADDLOCAL=ALL"
