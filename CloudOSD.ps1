@@ -6,7 +6,7 @@ History:
 1.6 - 10-03-2023 - Exit unknown USB disks and if no USB F11 is used
 1.7 - 08-12-2023 - >.NET Framework 8 X86 en X64
 #>
-$Version = "1.7"
+$Version = "1.8"
 #================================================
 # checking if F11 or known USB
 #================================================
@@ -42,7 +42,7 @@ Else {
 $Title = "Windows OSD phase"
 $host.UI.RawUI.WindowTitle = $Title
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI version $Version"
-$OSDDEBUG = "False"
+$OSDDEBUG = "True"
 
 If ($OSDDEBUG -eq "True") {
    Write-Host -ForegroundColor Red "Script is in debug mode!"
