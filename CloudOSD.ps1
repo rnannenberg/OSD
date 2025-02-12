@@ -426,7 +426,7 @@ If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     write-host "Checking latest VMware tools" -ForegroundColor Green
     #$vmwareTools = "https://packages.vmware.com/tools/esx/latest/windows/x64/index.html"
     $vmwareTools = "https://packages.vmware.com/tools/releases/latest/windows/x64/"
-    $pattern = "[0-9]+\.[0-9]+\.[0-9]+\-[0-9]+\-x86_64"
+    $pattern = "[0-9]+\.[0-9]+\.[0-9]+\-[0-9]+\-x64"
     
     #get the raw page content
     $pageContent=(Invoke-WebRequest -UseBasicParsing -Uri $vmwareTools).content
