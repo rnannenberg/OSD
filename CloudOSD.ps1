@@ -424,7 +424,8 @@ $Env:PSModulePath = $env:PSModulePath+";C:\Program Files\WindowsPowerShell\Scrip
 $env:Path = $env:Path+";C:\Program Files\WindowsPowerShell\Scripts"
 If ((Get-CimInstance -ClassName Win32_computersystem).model -like "VMware*") {
     write-host "Checking latest VMware tools" -ForegroundColor Green
-    $vmwareTools = "https://packages.vmware.com/tools/esx/latest/windows/x64/index.html"
+    #$vmwareTools = "https://packages.vmware.com/tools/esx/latest/windows/x64/index.html"
+    $vmwareTools = "https://packages.vmware.com/tools/releases/latest/windows/x64/"
     $pattern = "[0-9]+\.[0-9]+\.[0-9]+\-[0-9]+\-x86_64"
     
     #get the raw page content
