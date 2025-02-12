@@ -131,8 +131,6 @@ start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scri
 Start-Sleep -Seconds 10
 # Download and Install PowerShell 7
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\ps.ps1
-# Download and Install .Net Framework 6 X86 & X64
-# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net6.ps1
 # Download and Install .Net Framework 8 X86 & X64
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\net8.ps1
 # VcRedist Download and install supported versions
@@ -357,7 +355,7 @@ $WarningPreference = 'SilentlyContinue'
 #https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x86.exe
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
-Write-Host ".Net Framework 6 Download and install" -ForegroundColor Green
+Write-Host ".Net Framework 8 Download and install" -ForegroundColor Green
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Framework.log"
 $null = Start-Transcript -Path (Join-Path "C:\Windows\Temp" $Transcript ) -ErrorAction Ignore
 $env:APPDATA = "C:\Windows\System32\Config\SystemProfile\AppData\Roaming"
